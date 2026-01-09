@@ -500,7 +500,17 @@ def main():
     print("=" * 70 + "\n")
     
     # Run application
+
+    
+app.run(
+        host='0.0.0.0',
+        port=5000,
+        debug=True
     )
+
+# Create app instance for production servers (Gunicorn, etc.)
+app = create_app()
 if __name__ == '__main__':
 
     main()
+
