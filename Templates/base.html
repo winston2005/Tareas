@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema de Gestión de Tareas - Organiza tu vida de manera eficiente">
+    <title>{% block title %}Gestor de Tareas{% endblock %}</title>
+
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+    <!-- Font Awesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo">
+                <a href="/" class="logo-link">
+                    <h1>Gestor de Tareas</h1>
+                </a>
+            </div>
+
+            <button class="mobile-menu-toggle" id="mobileMenuToggle" aria-label="Abrir menú">
+                <i class="bi bi-list"></i>
+            </button>
+
+            <nav id="mainNav">
+                <ul class="nav-list">
+                    {% if not current_user.is_authenticated %}
+                    <li class="nav-item"><a href="/"
+                            class="nav-link {% if request.endpoint == 'index' %}active{% endif %}">Inicio</a>
+                    </li>
+                    <li class="nav-item"><a href="/about"
+                            class="nav-link {% if request.endpoint == 'about' %}active{% endif %}">Acerca
+                            de</a>
+                    </li>
+                    <li class="nav-item"><a href="/info"
+                            class="nav-link {% if request.endpoint == 'info' %}active{% endif %}">Información</a>
+                    </li>
+                    <li class="nav-item"><a href="/contact"
+                            class="nav-link {% if request.endpoint == 'contact' %}active{% endif %}">Contacto</a>
+                    </li>
+                    {% endif %}
+                    {% if current_user.is_authenticated %}
+                    {% if current_user.role == 'admin' %}
+                    <li class="nav-item"><a href="{{ url_for('admin.dashboard') }}" class="nav-link btn-login">Panel
+                            Admin</a></li>
+                    {% else %}
+                    <li class="nav-item"><a href="{{ url_for('user.profile') }}" class="nav-link btn-login">Mi
+                            Perfil</a></li>
+                    <li class="nav-item"><a href="{{ url_for('user.dashboard') }}" class="nav-link btn-login">Mis
+                            Tareas</a></li>
+                    {% endif %}
+                    <li class="nav-item"><a href="/auth/logout" class="nav-link btn-login">Cerrar Sesión</a></li>
+                    {% else %}
+                    <li class="nav-item"><a href="/auth/login" class="nav-link btn-login">Iniciar Sesión</a></li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const toggle = document.getElementById('mobileMenuToggle');
+            const nav = document.getElementById('mainNav');
+
+            if (toggle && nav) {
+                toggle.addEventListener('click', function () {
+                    nav.classList.toggle('active');
+                    const icon = toggle.querySelector('i');
+                    if (nav.classList.contains('active')) {
+                        icon.classList.remove('bi-list');
+                        icon.classList.add('bi-x');
+                    } else {
+                        icon.classList.remove('bi-x');
+                        icon.classList.add('bi-list');
+                    }
+                });
+            }
+        });
+    </script>
+
+    <!-- Hero Section (only show on home page for non-authenticated users) -->
+    {% if request.endpoint == 'index' and not current_user.is_authenticated %}
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title">Organiza Tu Vida de Manera Eficiente</h1>
+                <p class="hero-subtitle">La herramienta perfecta para gestionar tus tareas diarias, proyectos y
+                    objetivos en un solo lugar</p>
+                <a href="/auth/register" class="btn btn-primary">Comenzar Ahora</a>
+            </div>
+        </div>
+    </section>
+    {% endif %}
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3 class="footer-title">Gestor de Tareas</h3>
+                    <p class="footer-description">
+                        La solución integral para organizar tu vida personal y profesional de manera eficiente.
+                    </p>
+                    <div class="social-links">
+                        <a href="https://www.facebook.com/winston.alvarado.2025" target="_blank" class="social-link"
+                            aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/winstonalvarado26/" target="_blank" class="social-link"
+                            aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-heading">Enlaces Rápidos</h4>
+                    <ul class="footer-links">
+                        {% if not current_user.is_authenticated %}
+                        <li><a href="/">Inicio</a></li>
+                        <li><a href="/about">Acerca de</a></li>
+                        <li><a href="/info">Información</a></li>
+                        <li><a href="/contact">Contacto</a></li>
+                        {% endif %}
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-heading">Recursos</h4>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('blog') }}">Blog</a></li>
+                        <li><a href="{{ url_for('help_page') }}">Ayuda</a></li>
+                        <li><a href="{{ url_for('tutorials') }}">Tutoriales</a></li>
+                        <li><a href="{{ url_for('api_docs') }}">API</a></li>
+                    </ul>
+                </div>
+
+                <div class="footer-section">
+                    <h4 class="footer-heading">Contacto</h4>
+                    <ul class="footer-contact">
+                        <li><i class="fas fa-envelope"></i> winstonalvarado94@gmail.com</li>
+                        <li><i class="fas fa-phone"></i> +593 997076522</li>
+                        <li><i class="fas fa-map-marker-alt"></i> Archidona-Cotundo</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 Gestor de Tareas. Todos los derechos reservados.</p>
+                <div class="footer-legal">
+                    <a href="#">Política de Privacidad</a>
+                    <a href="#">Términos de Servicio</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+
+</html>

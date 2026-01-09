@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}Artículo - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="mb-4">
+                <a href="javascript:history.back()" class="btn btn-outline-secondary">
+                    <i class="fas fa-arrow-left me-2"></i> Volver
+                </a>
+            </div>
+
+            <article class="card shadow-md border-0">
+                <div class="card-body p-5">
+                    <div class="mb-3 text-primary fw-bold">
+                        <i class="fas fa-calendar-alt me-2"></i> {{ date|default('8 Enero, 2026') }}
+                    </div>
+
+                    <h1 class="display-5 fw-bold mb-4">{{ title|default('Título del Artículo') }}</h1>
+
+                    <img src="{{ image|default('https://via.placeholder.com/800x400') }}"
+                        class="img-fluid rounded mb-4 w-100" alt="Imagen del artículo"
+                        style="object-fit: cover; max-height: 400px;">
+
+                    <div class="article-content text-justify">
+                        <p class="lead text-muted mb-4">{{ subtitle|default('Este es un resumen del contenido principal
+                            del artículo...') }}</p>
+
+                        <!-- Content injected from backend -->
+                        {{ content|safe }}
+
+                        <div class="alert alert-info mt-5">
+                            <i class="fas fa-info-circle me-2"></i>
+                            <strong>Nota:</strong> Este es un artículo de demostración.
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer bg-light p-4 text-center">
+                    <p class="mb-0">¿Te fue útil este artículo? <a href="{{ url_for('contact') }}">Envíanos tus
+                            comentarios</a></p>
+                </div>
+            </article>
+        </div>
+    </div>
+</div>
+{% endblock %}

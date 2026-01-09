@@ -1,0 +1,313 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Tareas - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tasks-container">
+    <div class="row row-centered">
+        <!-- Header Section -->
+        <div class="col-12">
+            <div class="task-header-section">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-primary border-0 rounded-pill"
+                        title="Volver al Panel">
+                        <i class="bi bi-arrow-left fs-4"></i>
+                    </a>
+                    <div>
+                        <h1 class="mb-0">Mis Tareas</h1>
+                        <p class="text-light mb-0">Gestiona y organiza tus objetivos diarios</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap justify-content-center">
+                    <a href="{{ url_for('task.task_calendar') }}"
+                        class="btn btn-outline-primary px-4 py-2 rounded-pill fw-bold" title="Ver calendario de tareas">
+                        <i class="bi bi-calendar3"></i> Ver Calendario
+                    </a>
+                    <a href="{{ url_for('task.create_task') }}" class="btn-new-category" title="Crear nueva tarea">
+                        <i class="bi bi-plus-lg"></i> Nueva Tarea
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters Section -->
+        <div class="col-12">
+            <div class="task-filters-card">
+                <h5 class="mb-3 fw-bold text-primary">
+                    <i class="bi bi-funnel"></i> Filtrar Tareas
+                </h5>
+                <form method="GET" action="{{ url_for('task.list_tasks') }}" id="filterForm">
+                    <div class="row g-3">
+                        <div class="col-md-3">
+                            <label for="stateFilter" class="form-label small fw-bold">Estado</label>
+                            <select name="state" id="stateFilter" class="form-select form-control">
+                                <option value="">Todos los estados</option>
+                                {% for state in states %}
+                                <option value="{{ state.id }}" {{ 'selected' if current_filters.state==state.id else ''
+                                    }}>
+                                    {{ state.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="priorityFilter" class="form-label small fw-bold">Prioridad</label>
+                            <select name="priority" id="priorityFilter" class="form-select form-control">
+                                <option value="">Todas las prioridades</option>
+                                {% for priority in priorities %}
+                                <option value="{{ priority.id }}" {{ 'selected' if current_filters.priority==priority.id
+                                    else '' }}>
+                                    {{ priority.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="categoryFilter" class="form-label small fw-bold">Categoría</label>
+                            <select name="category" id="categoryFilter" class="form-select form-control">
+                                <option value="">Todas las categorías</option>
+                                {% for category in categories %}
+                                <option value="{{ category.id }}" {{ 'selected' if current_filters.category==category.id
+                                    else '' }}>
+                                    {{ category.nombre }}
+                                </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="submit" class="btn btn-primary w-100 py-2">
+                                <i class="bi bi-search"></i> Aplicar Filtros
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Tasks Grid -->
+        <div class="col-12">
+            {% if tasks %}
+            <div class="row g-4 row-centered">
+                {% for task in tasks %}
+                <div class="col-md-6 col-lg-6 col-xl-4">
+                    <div class="task-card-premium h-100">
+                        <!-- Priority Indicator -->
+                        {% set priority_class = 'baja' %}
+                        {% if task.prioridad_nombre == 'Alta' or task.prioridad_nombre == 'Urgente' %}
+                        {% set priority_class = 'alta' %}
+                        {% elif task.prioridad_nombre == 'Media' %}
+                        {% set priority_class = 'media' %}
+                        {% endif %}
+
+                        <div
+                            class="task-card-priority-line bg-{{ 'danger' if priority_class == 'alta' else 'warning' if priority_class == 'media' else 'success' }}">
+                        </div>
+
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div class="task-meta">
+                                {% if task.categoria_nombre %}
+                                <span class="badge bg-primary bg-opacity-10 text-primary">
+                                    <i class="bi bi-folder-fill"></i> {{ task.categoria_nombre }}
+                                </span>
+                                {% endif %}
+
+                                <span class="task-badge priority-{{ priority_class }}">
+                                    <i class="bi bi-lightning-fill"></i> {{ task.prioridad_nombre or 'Baja' }}
+                                </span>
+                            </div>
+                        </div>
+
+                        <h5 class="mb-2">{{ task.titulo }}</h5>
+
+                        <p class="task-description-preview text-muted mb-3">
+                            {% if task.descripcion %}
+                            {% if task.descripcion|length > 85 %}
+                            {{ task.descripcion[:85].rsplit(' ', 1)[0] }}...
+                            {% else %}
+                            {{ task.descripcion }}
+                            {% endif %}
+                            {% else %}
+                            Sin descripción
+                            {% endif %}
+                        </p>
+
+                        <div class="mb-3 d-flex align-items-center gap-3 flex-wrap">
+                            {% set status_class = 'pending' %}
+                            {% set status_icon = 'bi-circle' %}
+                            {% if task.estado_nombre == 'Completada' %}
+                            {% set status_class = 'completed' %}
+                            {% set status_icon = 'bi-check-circle-fill' %}
+                            {% elif task.estado_nombre == 'En Progreso' %}
+                            {% set status_class = 'progress' %}
+                            {% set status_icon = 'bi-play-circle-fill' %}
+                            {% endif %}
+                            <span class="task-badge status-{{ status_class }}">
+                                <i class="bi {{ status_icon }}"></i> {{ task.estado_nombre }}
+                            </span>
+
+                            {% if task.fecha_vencimiento %}
+                            <span class="task-date">
+                                <i class="bi bi-calendar-event"></i> {{ task.fecha_vencimiento[:10] }}
+                            </span>
+                            {% endif %}
+                        </div>
+
+                        <div class="task-footer-actions mt-auto">
+                            <div class="d-flex gap-2">
+                                <a href="{{ url_for('task.view_task', task_id=task.id) }}"
+                                    class="btn btn-sm btn-outline-primary rounded-pill px-3"
+                                    title="Ver detalles de la tarea" aria-label="Ver detalles de {{ task.titulo }}">
+                                    <i class="bi bi-eye"></i> <span class="d-none d-md-inline">Ver</span>
+                                </a>
+                                <a href="{{ url_for('task.edit_task', task_id=task.id) }}"
+                                    class="btn btn-sm btn-outline-warning rounded-pill px-3" title="Editar tarea"
+                                    aria-label="Editar {{ task.titulo }}">
+                                    <i class="bi bi-pencil"></i> <span class="d-none d-md-inline">Editar</span>
+                                </a>
+                            </div>
+
+                            <div class="d-flex gap-2">
+                                {% if task.estado_nombre != 'Completada' %}
+                                <form method="POST" action="{{ url_for('task.complete_task', task_id=task.id) }}"
+                                    class="d-inline complete-form">
+                                    <button type="submit" class="btn btn-sm btn-success rounded-pill px-3"
+                                        title="Marcar como completada"
+                                        aria-label="Marcar como completada {{ task.titulo }}">
+                                        <i class="bi bi-check-lg"></i> <span class="d-none d-md-inline">Listo</span>
+                                    </button>
+                                </form>
+                                {% endif %}
+                                <button type="button" class="btn btn-sm btn-outline-danger rounded-pill px-3"
+                                    data-bs-toggle="modal" data-bs-target="#deleteModal{{ task.id }}"
+                                    title="Eliminar tarea" aria-label="Eliminar {{ task.titulo }}">
+                                    <i class="bi bi-trash"></i> <span class="d-none d-md-inline">Borrar</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <!-- Empty State -->
+            <div class="empty-state">
+                <div class="empty-state-icon">
+                    <i class="bi bi-journal-x"></i>
+                </div>
+                <h3 class="fw-bold text-primary">No se encontraron tareas</h3>
+                <p class="text-muted mb-4">
+                    {% if current_filters.state or current_filters.priority or current_filters.category %}
+                    No hay tareas que coincidan con los filtros aplicados. Prueba limpiar los filtros.
+                    <br>
+                    <a href="{{ url_for('task.list_tasks') }}" class="btn btn-outline-primary mt-3">
+                        <i class="bi bi-arrow-counterclockwise"></i> Limpiar Filtros
+                    </a>
+                    {% else %}
+                    Aún no has creado ninguna tarea. ¡Empieza ahora mismo!
+                    {% endif %}
+                </p>
+                {% if not (current_filters.state or current_filters.priority or current_filters.category) %}
+                <a href="{{ url_for('task.create_task') }}" class="btn btn-primary px-5 py-3 rounded-pill">
+                    <i class="bi bi-plus-lg"></i> Crear mi Primera Tarea
+                </a>
+                {% endif %}
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<!-- Delete Confirmation Modals -->
+{% if tasks %}
+{% for task in tasks %}
+<div class="modal fade" id="deleteModal{{ task.id }}" tabindex="-1" aria-labelledby="deleteModalLabel{{ task.id }}"
+    aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg text-center" style="border-radius: 20px;">
+            <div class="modal-header border-0 pt-4 px-4 d-flex justify-content-center">
+                <h5 class="modal-title fw-bold text-danger w-100 text-center" id="deleteModalLabel{{ task.id }}">
+                    <i class="bi bi-exclamation-triangle-fill"></i> Confirmar Eliminación
+                </h5>
+            </div>
+            <div class="modal-body px-4">
+                <p class="fs-5 mb-2">¿Estás seguro de que deseas eliminar la tarea <strong>"{{ task.titulo }}"</strong>?
+                </p>
+                <p class="text-muted small mb-0">Esta acción no se puede deshacer y borrará permanentemente la tarea.
+                </p>
+            </div>
+            <div class="modal-footer border-0 pb-4 px-4 d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal">Cancelar</button>
+                <form method="POST" action="{{ url_for('task.delete_task', task_id=task.id) }}" class="d-inline">
+                    <button type="submit" class="btn btn-danger px-4 py-2 fw-bold">
+                        <i class="bi bi-trash"></i> Sí, Eliminar
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- Flash Messages Toast Container -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
+    {% for category, message in messages %}
+    <div class="toast align-items-center text-white bg-{{ 'success' if category == 'success' else 'danger' if category == 'error' else 'warning' if category == 'warning' else 'info' }} border-0"
+        role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                <i
+                    class="bi bi-{{ 'check-circle' if category == 'success' else 'exclamation-triangle' if category == 'error' else 'info-circle' }}"></i>
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Cerrar"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Inicializar todos los toasts
+        const toastElList = document.querySelectorAll('.toast');
+        toastElList.forEach(function (toastEl) {
+            const toast = new bootstrap.Toast(toastEl, {
+                autohide: true,
+                delay: 4000
+            });
+            toast.show();
+        });
+
+        // Confirmación para completar tareas
+        const completeForms = document.querySelectorAll('.complete-form');
+        completeForms.forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                const confirmed = confirm('¿Marcar esta tarea como completada?');
+                if (!confirmed) {
+                    e.preventDefault();
+                }
+            });
+        });
+
+        // Auto-submit en cambio de filtros (opcional)
+        const filterSelects = document.querySelectorAll('#filterForm select');
+        filterSelects.forEach(function (select) {
+            select.addEventListener('change', function () {
+                // Descomenta la siguiente línea si quieres auto-submit al cambiar filtros
+                // document.getElementById('filterForm').submit();
+            });
+        });
+    });
+</script>
+{% endblock %}

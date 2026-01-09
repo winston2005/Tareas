@@ -1,0 +1,278 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="dashboard-container">
+        <!-- Sidebar Izquierda -->
+        <aside class="dashboard-sidebar">
+            <div class="profile-mini-card">
+                <i class="bi bi-person-circle"></i>
+                <h5 class="mb-1">{{ current_user.name }}</h5>
+                <p class="small opacity-75 mb-0 text-white">{{ current_user.role|capitalize }}</p>
+            </div>
+
+            <div class="side-nav">
+                <a href="{{ url_for('task.create_task') }}" class="side-nav-link active"
+                    style="background: var(--primary-blue); color: white;">
+                    <i class="bi bi-plus-circle-fill"></i> Nueva Tarea
+                </a>
+                <a href="{{ url_for('task.list_tasks') }}" class="side-nav-link">
+                    <i class="bi bi-list-check"></i> Mis Tareas
+                </a>
+                <a href="{{ url_for('task.task_calendar') }}" class="side-nav-link">
+                    <i class="bi bi-calendar3"></i> Calendario
+                </a>
+                <a href="{{ url_for('category.list_categories') }}" class="side-nav-link">
+                    <i class="bi bi-tags"></i> Categorías
+                </a>
+                <a href="{{ url_for('user.profile') }}" class="side-nav-link">
+                    <i class="bi bi-person-gear"></i> Mi Perfil
+                </a>
+            </div>
+
+            <!-- Categorías Rápidas -->
+            <div class="card border-0 shadow-sm mt-4 overflow-hidden" style="border-radius: 15px;">
+                <div class="card-header bg-white py-3">
+                    <h6 class="mb-0 fw-bold"><i class="bi bi-folder2-open text-primary"></i> Categorías</h6>
+                </div>
+                <div class="card-body p-0">
+                    <div class="list-group list-group-flush small">
+                        {% if categorias %}
+                        {% for cat in categorias[:5] %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center py-2 px-3">
+                            <span>{{ cat.nombre }}</span>
+                            <span class="badge rounded-pill bg-light text-dark border">{{ cat.total_tareas if
+                                cat.total_tareas else 0 }}</span>
+                        </div>
+                        {% endfor %}
+                        {% else %}
+                        <div class="p-3 text-center text-muted">Sin categorías</div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Contenido Principal -->
+        <main class="dashboard-main">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-end mb-4">
+                <div>
+                    <h2 class="mb-1 fw-bold">Dashboard</h2>
+                    <p class="text-muted mb-0">¡Hola, {{ current_user.name }}! Aquí tienes tu resumen.</p>
+                </div>
+            </div>
+
+            <!-- Tip del día -->
+            <div class="tip-banner">
+                <div class="tip-icon">
+                    <i class="bi bi-lightbulb-fill"></i>
+                </div>
+                <div>
+                    <h6 class="fw-bold mb-1">Consejo del día</h6>
+                    <p class="mb-0 text-muted small">{{ consejo }}</p>
+                </div>
+            </div>
+
+            <!-- Estadísticas -->
+            <div class="dashboard-stats-row mb-4">
+                <div class="stat-card blue">
+                    <i class="bi bi-collection stat-icon blue"></i>
+                    <div class="stat-value">{{ stats.total if stats.total else 0 }}</div>
+                    <div class="stat-label">Total Tareas</div>
+                </div>
+                <div class="stat-card orange">
+                    <i class="bi bi-clock-history stat-icon orange"></i>
+                    <div class="stat-value">{{ stats.pending if stats.pending else 0 }}</div>
+                    <div class="stat-label">Pendientes</div>
+                </div>
+                <div class="stat-card green">
+                    <i class="bi bi-check2-all stat-icon green"></i>
+                    <div class="stat-value">{{ stats.completed if stats.completed else 0 }}</div>
+                    <div class="stat-label">Completadas</div>
+                </div>
+            </div>
+
+            <!-- Tareas Recientes -->
+            <div class="card border-0 shadow-sm" style="border-radius: 15px;">
+                <div class="card-header bg-white py-3 d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0 fw-bold"><i class="bi bi-activity text-primary"></i> Actividad Reciente</h5>
+                    <a href="{{ url_for('task.list_tasks') }}" class="btn btn-sm btn-link text-primary p-0">Ver todo</a>
+                </div>
+                <div class="card-body p-0">
+                    {% if tareas_recientes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th class="ps-4">Tarea</th>
+                                    <th>Estado</th>
+                                    <th>Prioridad</th>
+                                    <th class="pe-4 text-end">Fecha</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for tarea in tareas_recientes %}
+                                <tr class="task-row" data-href="{{ url_for('task.view_task', task_id=tarea.id) }}"
+                                    style="cursor: pointer;">
+                                    <td class="ps-4">
+                                        <div class="fw-bold">{{ tarea.titulo }}</div>
+                                        <div class="small text-muted">{{ tarea.categoria_nombre if
+                                            tarea.categoria_nombre else 'General' }}</div>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge bg-{{ 'success' if tarea.estado_nombre == 'Completada' else 'warning' if tarea.estado_nombre == 'Pendiente' else 'info' }} bg-opacity-10 text-{{ 'success' if tarea.estado_nombre == 'Completada' else 'warning' if tarea.estado_nombre == 'Pendiente' else 'info' }}">
+                                            {{ tarea.estado_nombre }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span
+                                            class="badge bg-{{ 'danger' if tarea.prioridad_nombre in ['Alta', 'Urgente'] else 'primary' }} bg-opacity-10 text-{{ 'danger' if tarea.prioridad_nombre in ['Alta', 'Urgente'] else 'primary' }}">
+                                            {{ tarea.prioridad_nombre }}
+                                        </span>
+                                    </td>
+                                    <td class="pe-4 text-end text-muted small">
+                                        {{ tarea.fecha_creacion[:10] }}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="bi bi-journal-x" style="font-size: 3rem; color: #dee2e6;"></i>
+                        <p class="text-muted mt-2">No hay tareas para mostrar.</p>
+                        <a href="{{ url_for('task.create_task') }}" class="btn btn-primary rounded-pill px-4">Crear
+                            Tarea</a>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </main>
+    </div>
+</div>
+
+<!-- CHATBOT FLOTANTE (VERSIÓN PREMIUM) -->
+<button class="chatbot-toggle" id="chatbotToggle" title="Asistente Virtual">
+    <i class="bi bi-chat-dots-fill"></i>
+</button>
+
+<div class="chatbot-container" id="chatbotContainer">
+    <div class="chatbot-header">
+        <h5>
+            <i class="bi bi-robot"></i>
+            <span>Asistente de Tareas</span>
+        </h5>
+    </div>
+
+    <div class="chatbot-messages" id="chatbotMessages">
+        <div class="chat-message bot">
+            <div class="chat-bubble">
+                ¡Hola {{ current_user.name }}! 👋 Soy tu asistente virtual. Puedo ayudarte con tus tareas y
+                organización. ¿En qué puedo apoyarte hoy?
+            </div>
+        </div>
+        <div class="typing-indicator" id="typingIndicator">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+    </div>
+
+    <div class="chatbot-input">
+        <input type="text" id="chatbotInput" placeholder="Escribe tu mensaje aquí..." autocomplete="off" />
+        <button id="chatbotSend" title="Enviar mensaje">
+            <i class="bi bi-send-fill"></i>
+        </button>
+    </div>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        // Redirección de filas de tareas
+        const rows = document.querySelectorAll('.task-row[data-href]');
+        rows.forEach(row => {
+            row.addEventListener('click', function () {
+                window.location.href = this.dataset.href;
+            });
+        });
+
+        // FUNCIONALIDAD DEL CHATBOT
+        const chatbotToggle = document.getElementById('chatbotToggle');
+        const chatbotContainer = document.getElementById('chatbotContainer');
+        const chatbotClose = document.getElementById('chatbotClose');
+        const chatbotMessages = document.getElementById('chatbotMessages');
+        const chatbotInput = document.getElementById('chatbotInput');
+        const chatbotSend = document.getElementById('chatbotSend');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        // Alternar chatbot
+        chatbotToggle.addEventListener('click', function () {
+            chatbotContainer.classList.toggle('active');
+            const icon = chatbotToggle.querySelector('i');
+            if (chatbotContainer.classList.contains('active')) {
+                chatbotInput.focus();
+                icon.classList.remove('bi-chat-dots-fill');
+                icon.classList.add('bi-x-lg');
+            } else {
+                icon.classList.remove('bi-x-lg');
+                icon.classList.add('bi-chat-dots-fill');
+            }
+        });
+
+        // Añadir mensaje
+        function addMessage(text, isUser) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `chat-message ${isUser ? 'user' : 'bot'}`;
+            const bubbleDiv = document.createElement('div');
+            bubbleDiv.className = 'chat-bubble';
+            bubbleDiv.textContent = text;
+            messageDiv.appendChild(bubbleDiv);
+            chatbotMessages.insertBefore(messageDiv, typingIndicator);
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+        }
+
+        // Enviar mensaje
+        async function sendMessage() {
+            const message = chatbotInput.value.trim();
+            if (message === '') return;
+
+            addMessage(message, true);
+            chatbotInput.value = '';
+            typingIndicator.classList.add('active');
+            chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ message: message })
+                });
+
+                const data = await response.json();
+                typingIndicator.classList.remove('active');
+                addMessage(data.response, false);
+
+            } catch (error) {
+                typingIndicator.classList.remove('active');
+                setTimeout(() => {
+                    addMessage('Lo siento, tuve un problema de conexión. Intenta de nuevo.', false);
+                }, 500);
+            }
+        }
+
+        chatbotSend.addEventListener('click', sendMessage);
+        chatbotInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') sendMessage();
+        });
+    });
+</script>
+{% endblock %}

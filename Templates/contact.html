@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}Contacto - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header Sección - Diseño más limpio -->
+            <div class="page-header text-center mb-5">
+                <h1 class="display-4 fw-bold">Ponte en Contacto</h1>
+                <div class="d-block mx-auto rounded-pill mb-3"
+                    style="width: 80px; height: 5px; background: linear-gradient(135deg, #2c5282 0%, #2f855a 100%) !important;">
+                </div>
+                <p class="lead text-muted mx-auto" style="max-width: 600px;">¿Tienes preguntas o comentarios? Estamos
+                    aquí para escucharte y ayudarte a mejorar tu productividad.</p>
+            </div>
+
+            <!-- Información de Contacto con Grid Mejorado y Robusto -->
+            <div class="row g-4 mb-5 text-center justify-content-center">
+                <div class="col-12 col-md-4 mb-4 mb-md-0">
+                    <div class="p-4 bg-white shadow-sm rounded-4 h-100 transition-hover border border-light">
+                        <div class="text-primary mb-3 mx-auto shadow-sm rounded-circle d-flex align-items-center justify-content-center bg-light"
+                            style="width: 70px; height: 70px; font-size: 2rem;">
+                            <i class="bi bi-envelope-heart-fill"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Email</h5>
+                        <p class="text-muted mb-0 small text-break" style="word-wrap: break-word;">
+                            winstonalvarado94@gmail.com</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4 mb-4 mb-md-0">
+                    <div class="p-4 bg-white shadow-sm rounded-4 h-100 transition-hover border border-light">
+                        <div class="text-success mb-3 mx-auto shadow-sm rounded-circle d-flex align-items-center justify-content-center bg-light"
+                            style="width: 70px; height: 70px; font-size: 2rem;">
+                            <i class="bi bi-telephone-fill"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Teléfono</h5>
+                        <p class="text-muted mb-0 small">+593 997076522</p>
+                    </div>
+                </div>
+                <div class="col-12 col-md-4">
+                    <div class="p-4 bg-white shadow-sm rounded-4 h-100 transition-hover border border-light">
+                        <div class="text-info mb-3 mx-auto shadow-sm rounded-circle d-flex align-items-center justify-content-center bg-light"
+                            style="width: 70px; height: 70px; font-size: 2rem;">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </div>
+                        <h5 class="fw-bold mb-2">Dirección</h5>
+                        <p class="text-muted mb-0 small">Archidona - Cotundo</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulario Centrado -->
+            <div class="card border-0 shadow-lg" style="border-radius: 25px; overflow: hidden;">
+                <div class="card-header bg-primary text-white text-center py-4"
+                    style="background: linear-gradient(135deg, #2c5282 0%, #2f855a 100%) !important; border: none;">
+                    <h3 class="mb-0 text-white fw-bold">Envíanos un mensaje</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                    {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} alert-dismissible fade show rounded-3 mb-4" role="alert">
+                        <i
+                            class="bi bi-{{ 'check-circle-fill' if category == 'success' else 'exclamation-triangle-fill' }}"></i>
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                    <form method="POST" action="{{ url_for('contact') }}" class="contact-modern-form">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control rounded-3" id="name" name="name"
+                                        placeholder="Tu nombre" required>
+                                    <label for="name">Nombre Completo</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input type="email" class="form-control rounded-3" id="email" name="email"
+                                        placeholder="nombre@ejemplo.com" required>
+                                    <label for="email">Correo Electrónico</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating mb-3">
+                                    <input type="text" class="form-control rounded-3" id="subject" name="subject"
+                                        placeholder="Asunto" required>
+                                    <label for="subject">Asunto</label>
+                                </div>
+                            </div>
+                            <div class="col-12">
+                                <div class="form-floating mb-4">
+                                    <textarea class="form-control rounded-3" id="message" name="message"
+                                        placeholder="Escribe tu mensaje aquí" style="height: 150px" required></textarea>
+                                    <label for="message">Tu Mensaje</label>
+                                </div>
+                            </div>
+                            <div class="col-12 text-center">
+                                <button type="submit"
+                                    class="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-sm transition-all">
+                                    <i class="bi bi-send-fill me-2"></i> Enviar Mensaje
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- FAQ Section Centrada -->
+            <div class="mt-5 pt-4">
+                <h2 class="text-center mb-4 fw-bold">Preguntas Frecuentes</h2>
+                <div class="accordion accordion-flush bg-white rounded-4 shadow-sm overflow-hidden" id="faqAccordion">
+                    <div class="accordion-item border-bottom">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold px-4 py-3" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                                ¿Cómo puedo restablecer mi contraseña?
+                            </button>
+                        </h2>
+                        <div id="collapseOne" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body px-4 py-3 text-muted text-justify">
+                                Puedes restablecer tu contraseña haciendo clic en "Olvidé mi contraseña" en la página de
+                                inicio de sesión y siguiendo las instrucciones que se enviarán a tu correo.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-bottom">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-bold px-4 py-3" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                                ¿Puedo colaborar con mi equipo?
+                            </button>
+                        </h2>
+                        <div id="collapseTwo" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body px-4 py-3 text-muted text-justify">
+                                ¡Sí! Nuestra plataforma está diseñada para el trabajo colaborativo. Puedes crear
+                                espacios compartidos y asignar tareas a otros miembros una vez que los invitados se
+                                unan.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .transition-hover {
+        transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+    }
+
+    .transition-hover:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
+        border-color: #3b6ba8 !important;
+    }
+
+    .text-break {
+        word-break: break-all !important;
+    }
+
+    .contact-modern-form .form-control:focus {
+        border-color: #2c5282;
+        box-shadow: 0 0 0 0.25rem rgba(44, 82, 130, 0.1);
+        background-color: #fff;
+    }
+
+    .btn-primary.transition-all:active {
+        transform: scale(0.98);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,270 @@
+{% extends "base.html" %}
+
+{% block title %}Panel Administrador - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+    /* DISEÑO COMPACTO PARA LAPTOP */
+    @media (min-width: 992px) {
+        .admin-dashboard-flex {
+            display: flex !important;
+            flex-direction: row !important;
+            gap: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .admin-sidebar-col {
+            flex: 0 0 260px !important;
+            /* Más estrecho */
+            max-width: 260px !important;
+        }
+
+        .admin-main-col {
+            flex: 1 !important;
+            min-width: 0;
+            /* Previene desbordamiento */
+        }
+    }
+
+    /* ESTADÍSTICAS MÁS PEQUEÑAS */
+    .stats-custom-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-premium {
+        padding: 1.25rem;
+        border-radius: 16px;
+        color: white !important;
+        position: relative;
+        overflow: hidden;
+        min-height: 100px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-premium:hover {
+        transform: translateY(-3px);
+    }
+
+    .stat-premium i {
+        position: absolute;
+        right: -5px;
+        bottom: -5px;
+        font-size: 3rem;
+        opacity: 0.15;
+    }
+
+    .stat-premium .v {
+        font-size: 2.5rem;
+        font-weight: 800;
+        line-height: 1;
+    }
+
+    .stat-premium .l {
+        font-size: 0.9rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        margin-top: 5px;
+        opacity: 0.9;
+    }
+
+    .g-blue {
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+    }
+
+    .g-green {
+        background: linear-gradient(135deg, #11998e, #38ef7d);
+    }
+
+    .g-orange {
+        background: linear-gradient(135deg, #f12711, #f5af19);
+    }
+
+    .g-red {
+        background: linear-gradient(135deg, #cb2d3e, #ef473a);
+    }
+
+    .action-btn-custom {
+        margin-bottom: 0.8rem;
+        text-align: left;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 600;
+        padding: 0.8rem 1.2rem;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+    .action-btn-custom:hover {
+        transform: translateX(5px);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4 px-lg-4">
+    <div class="row mb-4">
+        <div class="col-12">
+            <h1 class="fw-bold text-dark"><i class="fas fa-th-large me-2 text-primary"></i>Panel de Administración</h1>
+            <p class="text-muted">Gestión de usuarios y monitoreo del sistema</p>
+        </div>
+    </div>
+
+    <!-- Estadísticas Superiores -->
+    <div class="stats-custom-container">
+        <div class="stat-premium g-blue">
+            <i class="fas fa-users"></i>
+            <div class="v">{{ stats_usuarios.total_usuarios }}</div>
+            <div class="l">Total Usuarios</div>
+        </div>
+        <div class="stat-premium g-green">
+            <i class="fas fa-user-check"></i>
+            <div class="v">{{ stats_usuarios.usuarios_activos }}</div>
+            <div class="l">Activos Online</div>
+        </div>
+        <div class="stat-premium g-orange">
+            <i class="fas fa-user-times"></i>
+            <div class="v">{{ stats_usuarios.usuarios_inactivos }}</div>
+            <div class="l">Inactivos</div>
+        </div>
+        <div class="stat-premium g-red">
+            <i class="fas fa-user-shield"></i>
+            <div class="v">{{ stats_usuarios.admins }}</div>
+            <div class="l">Staff Admin</div>
+        </div>
+    </div>
+
+    <!-- Layout Principal: Lateral + Tabla (FORZADO LADO A LADO EN LAPTOP) -->
+    <div class="admin-dashboard-flex">
+
+        <!-- SIDEBAR: Acciones y Actividad -->
+        <div class="admin-sidebar-col mb-4">
+
+            <!-- Acciones Rápidas -->
+            <div class="card shadow-sm border-0 mb-4" style="border-radius: 20px;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0 text-primary fw-bold"><i class="fas fa-bolt me-2"></i>Acciones</h5>
+                </div>
+                <div class="card-body pt-0">
+                    <div class="d-flex flex-column">
+                        <a href="{{ url_for('admin.create_user') }}"
+                            class="btn btn-primary action-btn-custom shadow-sm">
+                            <i class="fas fa-user-plus"></i> Nuevo Usuario
+                        </a>
+                        <a href="{{ url_for('admin.list_users') }}"
+                            class="btn btn-info action-btn-custom text-white shadow-sm">
+                            <i class="fas fa-users"></i> Ver Usuarios
+                        </a>
+                        <a href="{{ url_for('admin.statistics') }}"
+                            class="btn btn-info action-btn-custom text-white shadow-sm">
+                            <i class="fas fa-chart-line"></i> Estadísticas
+                        </a>
+                        <a href="{{ url_for('admin.access_logs') }}"
+                            class="btn btn-warning action-btn-custom shadow-sm">
+                            <i class="fas fa-list-ul"></i> Auditoría
+                        </a>
+                        <a href="{{ url_for('admin.settings') }}" class="btn btn-secondary action-btn-custom shadow-sm">
+                            <i class="fas fa-cog"></i> Ajustes
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actividad Reciente -->
+            <div class="card shadow-sm border-0" style="border-radius: 20px;">
+                <div class="card-header bg-white py-3 border-0">
+                    <h5 class="mb-0 text-primary fw-bold"><i class="fas fa-history me-2"></i>Actividad</h5>
+                </div>
+                <div class="card-body pt-0 px-3">
+                    {% if accesos_recientes %}
+                    <div class="list-group list-group-flush">
+                        {% for acceso in accesos_recientes[:4] %}
+                        <div class="list-group-item px-0 py-3 border-0 border-bottom">
+                            <div class="d-flex justify-content-between align-items-center mb-1">
+                                <span class="fw-bold small">{{ acceso.nombre }}</span>
+                                <small class="text-primary fw-bold">{{ acceso.fecha_acceso|datetime_format('%H:%M')
+                                    }}</small>
+                            </div>
+                            <small class="text-muted d-block text-truncate">{{ acceso.accion }}</small>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    <p class="text-muted text-center py-4 mb-0">Sin actividad hoy</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- MAIN: Tabla de Usuarios (ALADO DE LAS ACCIONES) -->
+        <div class="admin-main-col mb-4">
+            <div class="card shadow-sm border-0" style="border-radius: 24px; overflow: hidden;">
+                <div class="card-header bg-white py-4 d-flex justify-content-between align-items-center border-0 px-4">
+                    <h5 class="mb-0 text-primary fw-bold"><i class="fas fa-users-cog me-2"></i>Usuarios Recientes</h5>
+                    <a href="{{ url_for('admin.list_users') }}"
+                        class="btn btn-sm btn-outline-primary rounded-pill px-4 fw-bold">Ver Base Completa</a>
+                </div>
+                <div class="card-body px-4 pt-0">
+                    {% if usuarios_recientes %}
+                    <div class="table-responsive">
+                        <table class="table table-hover align-middle mb-0">
+                            <thead class="bg-light">
+                                <tr class="small text-uppercase text-muted">
+                                    <th>Identidad</th>
+                                    <th>Contacto</th>
+                                    <th class="text-center">Permisos</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-end">Gesión</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for usuario in usuarios_recientes %}
+                                <tr>
+                                    <td>
+                                        <div class="fw-bold text-dark">{{ usuario.nombre }} {{ usuario.apellido }}</div>
+                                        <small class="text-muted" style="font-size: 0.7rem;">{{
+                                            usuario.fecha_registro|date_format }}</small>
+                                    </td>
+                                    <td class="small">{{ usuario.email }}</td>
+                                    <td class="text-center">
+                                        <span
+                                            class="badge bg-{{ 'danger' if usuario.rol == 'admin' else 'primary' }} rounded-pill px-3 shadow-sm">
+                                            {{ usuario.rol }}
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span
+                                            class="badge bg-{{ 'success' if usuario.activo else 'secondary' }} rounded-pill px-3 shadow-sm">
+                                            {{ 'Activo' if usuario.activo else 'Inactivo' }}
+                                        </span>
+                                    </td>
+                                    <td class="text-end">
+                                        <a href="{{ url_for('admin.edit_user', user_id=usuario.usuario_id) }}"
+                                            class="btn btn-sm btn-info text-white rounded-circle shadow-sm"
+                                            style="width: 35px; height: 35px; display: inline-flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-pen small"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fas fa-user-clock fs-1 text-muted opacity-25 mb-3 d-block"></i>
+                        <p class="text-muted">No hay nuevos registros para mostrar</p>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

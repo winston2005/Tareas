@@ -1,0 +1,110 @@
+{% extends "base.html" %}
+
+{% block title %}Editar Usuario - Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+    .edit-user-container {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .form-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: var(--spacing-md);
+    }
+
+    @media (max-width: 600px) {
+        .form-row {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    .security-section {
+        margin-top: var(--spacing-xl);
+        padding-top: var(--spacing-lg);
+        border-top: 1px solid var(--border-color);
+    }
+
+    .security-title {
+        color: var(--text-light);
+        font-size: 1.1rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin-bottom: var(--spacing-md);
+    }
+
+    .btn-group {
+        display: flex;
+        gap: var(--spacing-sm);
+        margin-top: var(--spacing-lg);
+    }
+
+    .btn-group .btn {
+        flex: 1;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="edit-user-container">
+    <div class="card">
+        <div class="card-header">
+            <i class="fas fa-user-edit"></i> Editar Perfil de Usuario
+        </div>
+
+        <form action="{{ url_for('admin.edit_user', user_id=usuario.usuario_id) }}" method="POST">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="nombre">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" value="{{ usuario.nombre }}" required
+                        placeholder="Ingrese el nombre">
+                </div>
+                <div class="form-group">
+                    <label for="apellido">Apellido</label>
+                    <input type="text" id="apellido" name="apellido" value="{{ usuario.apellido }}" required
+                        placeholder="Ingrese el apellido">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="email">Correo Electrónico</label>
+                <input type="email" id="email" name="email" value="{{ usuario.email }}" required
+                    placeholder="ejemplo@correo.com">
+            </div>
+
+            <div class="form-group">
+                <label for="rol">Rol del Sistema</label>
+                <select id="rol" name="rol">
+                    <option value="usuario" {{ 'selected' if usuario.rol=='usuario' else '' }}>Usuario Estándar</option>
+                    <option value="admin" {{ 'selected' if usuario.rol=='admin' else '' }}>Administrador</option>
+                </select>
+            </div>
+
+            <div class="security-section">
+                <h5 class="security-title"><i class="fas fa-shield-alt"></i> Seguridad</h5>
+                <div class="form-group">
+                    <label for="password">Nueva Contraseña</label>
+                    <input type="password" id="password" name="password"
+                        placeholder="Dejar en blanco para mantener la actual">
+                    <small class="text-muted" style="display: block; margin-top: 5px;">
+                        <i class="fas fa-info-circle"></i> Solo rellene este campo si desea cambiar la contraseña del
+                        usuario.
+                    </small>
+                </div>
+            </div>
+
+            <div class="btn-group">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save"></i> Actualizar Usuario
+                </button>
+                <a href="{{ url_for('admin.list_users') }}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Volver a la Lista
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

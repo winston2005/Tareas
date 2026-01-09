@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Tutoriales - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="page-header text-center mb-5">
+        <h1 class="display-4 fw-bold">Tutoriales</h1>
+        <p class="lead">Aprende a sacar el máximo provecho a la plataforma</p>
+    </div>
+
+    <div class="features-grid">
+        <div class="feature-card">
+            <div class="feature-icon text-danger"><i class="fab fa-youtube"></i></div>
+            <h4>Empezando desde Cero</h4>
+            <p class="text-muted small">Guía rápida de 5 minutos para configurar tu cuenta y crear tu primera tarea.</p>
+            <a href="https://youtu.be/VsFhp4BJGbM?si=0ciVlnkb3g06tNf6" target="_blank"
+                class="btn btn-sm btn-outline-dark mt-3">Ver Video</a>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon text-info"><i class="fas fa-layer-group"></i></div>
+            <h4>Gestión de Categorías</h4>
+            <p class="text-muted small">Aprende a organizar tus proyectos usando categorías y etiquetas de colores.</p>
+            <a href="https://youtu.be/Og7iI31kwPQ?si=klAXgQKVyyapZ_QZ" target="_blank"
+                class="btn btn-sm btn-outline-dark mt-3">Ver Guía</a>
+        </div>
+
+        <div class="feature-card">
+            <div class="feature-icon text-success"><i class="fas fa-chart-line"></i></div>
+            <h4>Dominando el Dashboard</h4>
+            <p class="text-muted small">Interpretación de estadísticas y cómo usar los datos para mejorar tu ritmo.</p>
+            <a href="https://www.youtube.com/results?search_query=dashboard+productividad+personal" target="_blank"
+                class="btn btn-sm btn-outline-dark mt-3">Ver Video</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

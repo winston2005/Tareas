@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Inicio - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<!-- Features Section -->
+<h2 class="section-title text-center" id="features">Características Principales</h2>
+
+<div class="features-grid">
+    <div class="feature-card">
+        <div class="feature-icon">✅</div>
+        <h3 class="text-center">Gestión Simple</h3>
+        <p class="text-justify">Crea, organiza y completa tus tareas con una interfaz intuitiva y fácil de usar.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h3 class="text-center">Prioridades Claras</h3>
+        <p class="text-justify">Establece prioridades y fechas límite para mantener el enfoque en lo más importante.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3 class="text-center">Seguimiento Visual</h3>
+        <p class="text-justify">Visualiza tu progreso y mantén la motivación con estadísticas detalladas.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">🔔</div>
+        <h3 class="text-center">Recordatorios</h3>
+        <p class="text-justify">Recibe notificaciones para nunca olvidar una tarea importante.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">👥</div>
+        <h3 class="text-center">Colaboración</h3>
+        <p class="text-justify">Trabaja en equipo y comparte tareas con compañeros de trabajo o familia.</p>
+    </div>
+
+    <div class="feature-card">
+        <div class="feature-icon">☁️</div>
+        <h3 class="text-center">Sincronización</h3>
+        <p class="text-justify">Accede a tus tareas desde cualquier dispositivo con sincronización en la nube.</p>
+    </div>
+</div>
+
+<!-- CTA Section -->
+<div class="cta-section">
+    <div class="cta-content">
+        <h2 class="text-center">¿Listo para Aumentar tu Productividad?</h2>
+        <p class="text-center">Únete a miles de usuarios que ya están organizando mejor su tiempo</p>
+        {% if current_user.is_authenticated %}
+        <div class="text-center">
+            <a href="/user/dashboard" class="btn btn-primary">Ver Mis Tareas</a>
+        </div>
+        {% else %}
+        <div class="text-center">
+            <a href="/auth/register" class="btn btn-primary">Crear Cuenta Gratis</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

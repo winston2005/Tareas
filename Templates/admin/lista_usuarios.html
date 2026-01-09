@@ -1,0 +1,111 @@
+{% extends "base.html" %}
+
+{% block title %}Gestión de Usuarios - Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="row align-items-center mb-4">
+    <div class="col-12 d-flex align-items-center gap-3">
+        <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary rounded-pill">
+            <i class="fas fa-arrow-left"></i> <span class="d-none d-sm-inline">Volver</span>
+        </a>
+        <h1 class="mb-0">
+            <i class="fas fa-users"></i> Gestión de Usuarios
+        </h1>
+    </div>
+</div>
+
+<div class="row mb-3">
+    <div class="col-md-6">
+        <a href="{{ url_for('admin.create_user') }}" class="btn btn-primary">
+            <i class="fas fa-user-plus"></i> Nuevo Usuario
+        </a>
+    </div>
+    <div class="col-md-6 text-end">
+        <span class="badge bg-primary">Total: {{ users|length }} usuarios</span>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card shadow">
+            <div class="card-body">
+                {% if users %}
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Nombre</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for usuario in users %}
+                            <tr>
+                                <td>{{ usuario.usuario_id }}</td>
+                                <td>{{ usuario.nombre }} {{ usuario.apellido }}</td>
+                                <td>{{ usuario.email }}</td>
+                                <td>
+                                    <span class="badge bg-{{ 'danger' if usuario.rol == 'admin' else 'primary' }}">
+                                        {{ usuario.rol }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge bg-{{ 'success' if usuario.activo else 'secondary' }}">
+                                        {{ 'Activo' if usuario.activo else 'Inactivo' }}
+                                    </span>
+                                </td>
+                                <td>{{ usuario.fecha_registro|date_format }}</td>
+                                <td>
+                                    <div class="btn-group" role="group">
+                                        <a href="{{ url_for('admin.edit_user', user_id=usuario.usuario_id) }}"
+                                            class="btn btn-sm btn-info text-white">
+                                            <i class="fas fa-pen"></i>
+                                        </a>
+                                        <form method="POST"
+                                            action="{{ url_for('admin.toggle_user_active', user_id=usuario.usuario_id) }}"
+                                            class="d-inline">
+                                            <button type="submit"
+                                                class="btn btn-sm btn-{{ 'warning' if usuario.activo else 'success' }}">
+                                                <i
+                                                    class="fas fa-{{ 'times-circle' if usuario.activo else 'check-circle' }}"></i>
+                                            </button>
+                                        </form>
+                                        <form method="POST"
+                                            action="{{ url_for('admin.delete_user', user_id=usuario.usuario_id) }}"
+                                            class="d-inline"
+                                            onsubmit="return confirm('¿Estás seguro de eliminar este usuario?');">
+                                            <button type="submit" class="btn btn-sm btn-danger">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="text-center py-5">
+                    <i class="fas fa-users" style="font-size: 3rem;"></i>
+                    <h5 class="mt-3">No hay usuarios registrados</h5>
+                    <p class="text-muted">Comienza creando nuevos usuarios para tu sistema</p>
+                    <a href="{{ url_for('admin.create_user') }}" class="btn btn-primary">
+                        Crear primer usuario
+                    </a>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

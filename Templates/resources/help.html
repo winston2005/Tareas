@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block title %}Ayuda - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="page-header text-center mb-5">
+        <h1 class="display-4 fw-bold">Centro de Ayuda</h1>
+        <p class="lead">Respuestas a las preguntas más frecuentes</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 mx-auto">
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h5 mb-3 text-primary"><i class="fas fa-question-circle"></i> ¿Cómo cambio mi contraseña?
+                    </h3>
+                    <p class="text-muted">Ve a "Mi Perfil" en el menú superior, selecciona la pestaña "Seguridad" y
+                        sigue los pasos para actualizar tu clave.</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h5 mb-3 text-primary"><i class="fas fa-question-circle"></i> ¿Puedo exportar mis tareas?
+                    </h3>
+                    <p class="text-muted">Actualmente estamos trabajando en esta función. Pronto podrás descargar tus
+                        reportes en PDF y Excel.</p>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-body">
+                    <h3 class="h5 mb-3 text-primary"><i class="fas fa-question-circle"></i> ¿Es gratis el servicio?</h3>
+                    <p class="text-muted">Sí, nuestro plan básico es 100% gratuito para uso personal. Para equipos
+                        grandes ofrecemos planes premium.</p>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <p class="mb-3">¿No encuentras lo que buscas?</p>
+                <a href="{{ url_for('contact') }}" class="btn btn-primary">Contáctanos</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block title %}Registro - Sistema de Tareas{% endblock %}
+
+
+{% block content %}
+<div class="login-background">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="register-logo">
+                    <i class="bi bi-person-plus"></i>
+                </div>
+                <h2>Crear Cuenta</h2>
+                <p>Complete el formulario para registrarse</p>
+            </div>
+
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('auth.register') }}" id="registerForm">
+                <div class="form-row">
+                    <div class="form-col">
+                        <label for="name" class="form-label">Nombre *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" id="name" name="name" required
+                                placeholder="Ingrese su nombre">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <label for="lastname" class="form-label">Apellido *</label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="bi bi-person"></i></span>
+                            <input type="text" class="form-control" id="lastname" name="lastname" required
+                                placeholder="Ingrese su apellido">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email" class="form-label">Correo Electrónico *</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                        <input type="email" class="form-control" id="email" name="email" required
+                            placeholder="correo@ejemplo.com">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña *</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                        <input type="password" class="form-control" id="password" name="password" required minlength="8"
+                            placeholder="Mínimo 8 caracteres">
+                    </div>
+                    <span class="form-text">
+                        Mínimo 8 caracteres, incluir mayúsculas, minúsculas, números y caracteres especiales
+                    </span>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirm_password" class="form-label">Confirmar Contraseña *</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="bi bi-lock-fill"></i></span>
+                        <input type="password" class="form-control" id="confirm_password" name="confirm_password"
+                            required placeholder="Confirme su contraseña">
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-register" id="registerButton">
+                    <span>Crear Cuenta</span>
+                </button>
+            </form>
+
+            <div class="divider">
+                <span>O</span>
+            </div>
+
+            <div class="login-link">
+                <p>¿Ya tiene cuenta? <a href="{{ url_for('auth.login') }}">Inicie sesión aquí</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    document.getElementById('registerForm').addEventListener('submit', function (e) {
+        const password = document.getElementById('password').value;
+        const confirm = document.getElementById('confirm_password').value;
+        const button = document.getElementById('registerButton');
+
+        if (password !== confirm) {
+            e.preventDefault();
+            alert('Las contraseñas no coinciden');
+            return;
+        }
+
+        button.classList.add('loading');
+    });
+</script>
+{% endblock %}

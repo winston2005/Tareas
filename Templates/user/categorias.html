@@ -1,0 +1,141 @@
+{% extends "base.html" %}
+
+{% block title %}Mis Categorías - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tasks-container">
+    <div class="row row-centered">
+        <!-- Header Section -->
+        <div class="col-12">
+            <div class="task-header-section">
+                <div class="d-flex align-items-center gap-3 mb-2">
+                    <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-primary border-0 rounded-pill"
+                        title="Volver al Panel">
+                        <i class="bi bi-arrow-left fs-4"></i>
+                    </a>
+                    <div>
+                        <h1 class="mb-0"><i class="bi bi-tags-fill"></i> Mis Categorías</h1>
+                        <p class="text-light mb-0">Organiza tus tareas por temas o proyectos</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 flex-wrap justify-content-center">
+                    <a href="{{ url_for('category.create_category') }}" class="btn-new-category">
+                        <i class="bi bi-plus-lg"></i> Nueva Categoría
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        {% if categories %}
+        <div class="col-12">
+            <div class="tip-box mb-4">
+                <i class="bi bi-lightbulb-fill text-warning"></i>
+                <p class="mb-0"><strong>Tip:</strong> Las categorías te ayudan a organizar mejor tus tareas. Asigna
+                    colores para identificarlas rápidamente.</p>
+            </div>
+        </div>
+
+        <!-- Categories Grid -->
+        <div class="col-12">
+            <div class="row g-4 row-centered">
+                {% for category in categories %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="category-card"> <!-- Added missing class -->
+                        <div class="category-header">
+                            <h3 class="category-name">
+                                <i class="bi bi-folder-fill"></i> {{ category.nombre }}
+                            </h3>
+                            <div class="category-actions">
+                                <a href="{{ url_for('category.edit_category', category_id=category.categoria_id) }}"
+                                    class="btn-action" title="Editar">
+                                    <i class="bi bi-pencil-square"></i>
+                                </a>
+                                <form method="POST"
+                                    action="{{ url_for('category.delete_category', category_id=category.categoria_id) }}"
+                                    class="delete-form d-inline"
+                                    onsubmit="return confirm('¿Estás seguro de eliminar esta categoría? Las tareas asociadas quedarán sin categoría.');">
+                                    <button type="submit" class="btn-action" title="Eliminar">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+
+                        <div class="category-description">
+                            {% if category.descripcion %}
+                            {{ category.descripcion }}
+                            {% else %}
+                            <span class="text-muted fst-italic">Sin descripción</span>
+                            {% endif %}
+                        </div>
+
+                        <div class="category-stats mt-auto">
+                            <a href="{{ url_for('task.list_tasks', category=category.categoria_id) }}"
+                                class="category-tasks-count text-decoration-none">
+                                <i class="bi bi-eye"></i>
+                                <span>Ver tareas asociadas</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    {% else %}
+    <!-- Estado vacío -->
+    <div class="col-12">
+        <div class="empty-state">
+            <div class="empty-state-icon text-muted opacity-25">
+                <i class="bi bi-folder-x"></i>
+            </div>
+            <h2 class="fw-bold text-primary">No tienes categorías aún</h2>
+            <p class="text-muted mb-4">Las categorías te ayudan a organizar tus tareas de forma eficiente.<br>
+                ¡Crea tu primera categoría para comenzar!</p>
+            <a href="{{ url_for('category.create_category') }}" class="btn btn-primary px-5 py-3 rounded-pill">
+                <i class="bi bi-plus-lg"></i> Crear mi primera categoría
+            </a>
+
+            <div class="mt-5 pt-4 border-top">
+                <p class="text-muted mb-3 small fw-bold text-uppercase">Sugerencias de categorías</p>
+                <div class="d-flex gap-2 justify-content-center flex-wrap">
+                    <span class="suggestion-badge">🏠 Personal</span>
+                    <span class="suggestion-badge">💼 Trabajo</span>
+                    <span class="suggestion-badge">🎓 Estudio</span>
+                    <span class="suggestion-badge">💪 Fitness</span>
+                    <span class="suggestion-badge">🛒 Compras</span>
+                    <span class="suggestion-badge">🎨 Hobbies</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+</div>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    {% for category, message in messages %}
+    <div class="toast show align-items-center text-white bg-{{ 'success' if category == 'success' else 'danger' }} border-0"
+        role="alert" aria-live="assertive" aria-atomic="true">
+        <div class="d-flex">
+            <div class="toast-body">
+                {{ message }}
+            </div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+
+{% endblock %}

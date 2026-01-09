@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}Información - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="page-header text-center">
+    <h1>Información Importante</h1>
+    <p class="lead text-center">Detalles sobre nuestra plataforma y servicios</p>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <section class="mb-5">
+            <h2 class="text-center">Sobre Nuestra Plataforma</h2>
+            <p class="text-justify">Nuestro Gestor de Tareas es una solución integral diseñada para ayudarte a organizar
+                tu vida personal y profesional. Con características avanzadas y una interfaz intuitiva, te permitimos
+                maximizar tu productividad sin complicaciones.</p>
+
+            <h3 class="mt-4 text-center">Beneficios Clave</h3>
+            <div class="benefits-grid">
+                <div class="benefit-card">
+                    <h4 class="text-center">📈 Mejora tu productividad</h4>
+                    <p class="text-justify">Organiza tus tareas de manera eficiente y enfócate en lo que realmente
+                        importa.</p>
+                </div>
+                <div class="benefit-card">
+                    <h4 class="text-center">⏰ Ahorra tiempo</h4>
+                    <p class="text-justify">Automatiza recordatorios y gestiona tus plazos de entrega sin estrés.</p>
+                </div>
+                <div class="benefit-card">
+                    <h4 class="text-center">🎯 Mantén el enfoque</h4>
+                    <p class="text-justify">Prioriza tus tareas y evita distraerte con actividades menos importantes.
+                    </p>
+                </div>
+                <div class="benefit-card">
+                    <h4 class="text-center">📊 Visualiza tu progreso</h4>
+                    <p class="text-justify">Obtén estadísticas detalladas sobre tu desempeño y logros.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="mb-5">
+            <h2 class="text-center">Planes y Precios</h2>
+            <div class="pricing-table">
+                <div class="pricing-card">
+                    <h3 class="text-center">Básico</h3>
+                    <div class="price">$0<span>/mes</span></div>
+                    <ul class="features">
+                        <li>Hasta 100 tareas</li>
+                        <li>3 listas de tareas</li>
+                        <li>Recordatorios básicos</li>
+                        <li>Soporte por correo</li>
+                    </ul>
+                    <button class="btn btn-outline-primary">Comenzar Gratis</button>
+                </div>
+                <div class="pricing-card popular">
+                    <div class="popular-badge">Popular</div>
+                    <h3 class="text-center">Profesional</h3>
+                    <div class="price">$9<span>/mes</span></div>
+                    <ul class="features">
+                        <li>Tareas ilimitadas</li>
+                        <li>Listas ilimitadas</li>
+                        <li>Recordatorios avanzados</li>
+                        <li>Colaboración en equipo</li>
+                        <li>Estadísticas detalladas</li>
+                        <li>Soporte prioritario</li>
+                    </ul>
+                    <button class="btn btn-primary">Probar Gratis</button>
+                </div>
+                <div class="pricing-card">
+                    <h3 class="text-center">Empresarial</h3>
+                    <div class="price">$29<span>/mes</span></div>
+                    <ul class="features">
+                        <li>Todos los beneficios profesionales</li>
+                        <li>Gestión de múltiples equipos</li>
+                        <li>Reportes personalizados</li>
+                        <li>Integración con otras plataformas</li>
+                        <li>Soporte 24/7</li>
+                        <li>Administrador de cuentas dedicado</li>
+                    </ul>
+                    <button class="btn btn-outline-primary">Contactar Ventas</button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h3 class="card-title text-center">Últimas Actualizaciones</h3>
+                <ul class="updates-list">
+                    <li>
+                        <strong>v2.5.1</strong>
+                        <p class="text-justify">Nueva función de arrastrar y soltar para reorganizar tareas</p>
+                        <small class="text-muted">Publicado: 15 de diciembre, 2025</small>
+                    </li>
+                    <li>
+                        <strong>v2.5.0</strong>
+                        <p class="text-justify">Mejoras en la sincronización en tiempo real</p>
+                        <small class="text-muted">Publicado: 10 de diciembre, 2025</small>
+                    </li>
+                    <li>
+                        <strong>v2.4.3</strong>
+                        <p class="text-justify">Corrección de errores menores y mejoras de rendimiento</p>
+                        <small class="text-muted">Publicado: 5 de diciembre, 2025</small>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h3 class="card-title text-center">Testimonios</h3>
+                <div class="testimonial">
+                    <p class="text-justify">"Esta plataforma ha transformado completamente mi forma de trabajar.
+                        ¡Altamente recomendada!"</p>
+                    <cite>- María González, Gerente de Proyectos</cite>
+                </div>
+                <div class="testimonial mt-3">
+                    <p class="text-justify">"La mejor herramienta de gestión de tareas que he usado. Simple pero
+                        poderosa."</p>
+                    <cite>- Juan Pérez, Freelancer</cite>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

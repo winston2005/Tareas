@@ -1,0 +1,126 @@
+{% extends "base.html" %}
+
+{% block title %}Acerca de - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <!-- Header Seccion -->
+    <div class="page-header text-center mb-5">
+        <h1 class="display-4 fw-bold">Acerca de Nosotros</h1>
+        <p class="lead">Conoce la historia detrás de tu herramienta de productividad favorita</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <!-- Nuestra Historia -->
+            <div class="card mb-5 border-0 shadow-lg" style="border-radius: 20px;">
+                <div class="card-body p-5 text-center">
+                    <h2 class="mb-4 text-primary text-center"><i class="bi bi-bullseye"></i> Nuestra Misión</h2>
+                    <p class="fs-5 text-muted text-justify">
+                        En <strong>Gestor de Tareas</strong>, nuestra misión es proporcionar una herramienta intuitiva y
+                        poderosa que ayude a las personas a organizar su vida y trabajo de manera más eficiente. Creemos
+                        que una buena gestión del tiempo es fundamental para alcanzar el éxito personal y profesional.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Vision y Valores Grid -->
+            <div class="row mb-5">
+                <div class="col-md-6 mb-4 d-flex">
+                    <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px;">
+                        <div class="card-body p-4 text-center">
+                            <div class="feature-icon mb-3" style="font-size: 3rem;">👁️</div>
+                            <h3 class="text-primary text-center">Nuestra Visión</h3>
+                            <p class="text-muted text-justify">
+                                Queremos ser la plataforma líder mundial en gestión de tareas, reconocida por nuestra
+                                simplicidad, eficacia y capacidad para adaptarnos a las necesidades de nuestros
+                                usuarios.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-4 d-flex">
+                    <div class="card h-100 border-0 shadow-sm" style="border-radius: 20px;">
+                        <div class="card-body p-4 text-center">
+                            <div class="feature-icon mb-3" style="font-size: 3rem;">💎</div>
+                            <h3 class="text-primary text-center">Nuestros Valores</h3>
+                            <p class="text-muted text-justify">
+                                Integridad, innovación constante y un enfoque obsesivo en la experiencia del usuario.
+                                Trabajamos cada día para simplificar lo complejo.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Características Seccion -->
+            <div class="text-center mb-5">
+                <h2 class="mb-4">Lo que nos hace diferentes</h2>
+                <div class="features-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">⚡</div>
+                        <h4 class="text-center">Velocidad</h4>
+                        <p class="small text-muted">Interfaz rápida y fluida sin esperas.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📱</div>
+                        <h4 class="text-center">Multiplataforma</h4>
+                        <p class="small text-muted">Accede desde cualquier dispositivo.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🛡️</div>
+                        <h4 class="text-center">Seguridad</h4>
+                        <p class="small text-muted">Tus datos están cifrados y seguros.</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🤝</div>
+                        <h4 class="text-center">Colaboración</h4>
+                        <p class="small text-muted">Comparte tareas con facilidad.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- El Equipo -->
+            <div class="card border-0 shadow-lg mb-5 overflow-hidden" style="border-radius: 20px;">
+                <div class="card-header bg-primary text-white text-center py-4"
+                    style="background: linear-gradient(135deg, #2c5282 0%, #2f855a 100%) !important;">
+                    <h2 class="mb-0 text-white">Nuestro Equipo</h2>
+                </div>
+                <div class="card-body p-5 text-center">
+                    <p class="fs-5 mb-4 text-justify">
+                        Contamos con un equipo multidisciplinario de desarrolladores, diseñadores y expertos en
+                        productividad comprometidos con tu éxito.
+                    </p>
+                    <div class="team-grid">
+                        <div class="team-member">
+                            <div class="team-img-container">
+                                <img src="{{ url_for('static', filename='img/foto4.jpeg') }}" alt="Desarrollo">
+                            </div>
+                            <h5>Encargado de Desarrollo</h5>
+                        </div>
+                        <div class="team-member">
+                            <div class="team-img-container">
+                                <img src="{{ url_for('static', filename='img/foto4.jpeg') }}" alt="Diseño UI/UX">
+                            </div>
+                            <h5> Encargado de Diseño UI/UX</h5>
+                        </div>
+                        <div class="team-member">
+                            <div class="team-img-container">
+                                <img src="{{ url_for('static', filename='img/foto4.jpeg') }}" alt="Soporte">
+                            </div>
+                            <h5>Encargado de Soporte Tecnico</h5>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Call to Action -->
+            <div class="text-center mt-5 p-5 bg-light rounded-3 shadow-sm" style="border-radius: 20px;">
+                <h3 class="mb-4">¿Listo para empezar tu viaje hacia la productividad?</h3>
+                <a href="{{ url_for('auth.register') }}" class="btn btn-primary btn-lg px-5"
+                    style="border-radius: 12px; font-weight: 700;">Crear mi Cuenta Gratis</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

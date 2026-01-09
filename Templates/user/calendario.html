@@ -1,0 +1,95 @@
+﻿{% extends "base.html" %}
+
+{% block title %}Calendario de Tareas - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+<!-- FullCalendar CSS -->
+<link href='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.css' rel='stylesheet' />
+{% endblock %}
+
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="task-header-section mb-4">
+            <div>
+                <h1>Mi Calendario</h1>
+                <p class="text-light mb-0">Visualiza y organiza tus plazos de forma interactiva</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('task.list_tasks') }}"
+                    class="btn btn-outline-primary px-4 py-2 rounded-pill fw-bold">
+                    <i class="bi bi-list-task"></i> Ver Lista
+                </a>
+                <a href="{{ url_for('task.create_task') }}" class="btn-new-category">
+                    <i class="bi bi-plus-lg"></i> Nueva Tarea
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-12">
+        <div class="calendar-container">
+            <!-- Storing data in a hidden div to avoid JS formatting issues -->
+            <div id="calendar-data" style="display: none;">
+                [
+                {% for task in tasks if task.fecha_vencimiento %}
+                {
+                "id": "{{ task.id }}",
+                "title": "{{ task.titulo | replace('"', '\"') }}",
+                "start": "{{ task.fecha_vencimiento[:10] }}",
+                "url": "{{ url_for('task.view_task', task_id=task.id) }}",
+                "className": [
+                "priority-{{ 'alta' if (task.prioridad_nombre in ['Alta', 'Urgente']) else 'media' if
+                task.prioridad_nombre == 'Media' else 'baja' }}",
+                "{{ 'status-completed' if task.estado_nombre == 'Completada' else '' }}"
+                ]
+                }{% if not loop.last %},{% endif %}
+                {% endfor %}
+                ]
+            </div>
+            <div id='calendar'></div>
+        </div>
+    </div>
+</div>
+
+<script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.10/index.global.min.js'></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarEl = document.getElementById('calendar');
+        var dataEl = document.getElementById('calendar-data');
+
+        var taskEvents = [];
+        try {
+            taskEvents = JSON.parse(dataEl.textContent);
+        } catch (e) {
+            console.error("Error parsing calendar data:", e);
+        }
+
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            locale: 'es',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+            },
+            buttonText: {
+                today: 'Hoy', month: 'Mes', week: 'Semana', day: 'Día'
+            },
+            firstDay: 1,
+            events: taskEvents,
+            eventClick: function (info) {
+                if (info.event.url) {
+                    window.location.href = info.event.url;
+                    return false;
+                }
+            },
+            height: 'auto',
+            dayMaxEvents: true
+        });
+        calendar.render();
+    });
+</script>
+{% endblock %}

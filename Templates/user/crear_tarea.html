@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Tarea - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tasks-container">
+    <div class="row row-centered">
+        <div class="col-md-11 col-lg-10 col-xl-8">
+            <div class="form-card">
+                <div class="form-header-box">
+                    <h1>
+                        <i class="bi bi-plus-circle-fill text-primary"></i>
+                        Nueva Tarea
+                    </h1>
+                    <p>Define tus objetivos y mantén el control de tu progreso</p>
+                </div>
+
+                <form action="{{ url_for('task.create_task') }}" method="POST" id="taskForm">
+                    <!-- Título -->
+                    <div class="mb-4">
+                        <label for="title" class="form-label">
+                            Título de la Tarea <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control form-control-lg" id="title" name="title" required
+                            placeholder="Ej: Preparar presentación trimestral" maxlength="200">
+                        <div class="form-text mt-2"><i class="bi bi-info-circle"></i> Describe brevemente la acción
+                            principal.</div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <label for="description" class="form-label">Descripción Detallada</label>
+                        <textarea class="form-control" id="description" name="description" rows="4"
+                            placeholder="Añade contextos, subtareas o notas importantes..."></textarea>
+                        <div class="form-text mt-2">Opcional: Detalles que te ayuden a completar la tarea.</div>
+                    </div>
+
+                    <div class="row">
+                        <!-- Fecha de vencimiento -->
+                        <div class="col-md-6 mb-4">
+                            <label for="due_date" class="form-label">
+                                <i class="bi bi-calendar-event text-primary"></i> Fecha Límite
+                            </label>
+                            <input type="date" class="form-control" id="due_date" name="due_date">
+                            <div class="form-text mt-2">¿Cuándo debe estar finalizada?</div>
+                        </div>
+
+                        <!-- Categoría -->
+                        <div class="col-md-6 mb-4">
+                            <label for="category_id" class="form-label">
+                                <i class="bi bi-folder text-primary"></i> Categoría
+                            </label>
+                            <select class="form-select form-control" id="category_id" name="category_id">
+                                <option value="">Sin categoría (General)</option>
+                                {% if categories %}
+                                {% for category in categories %}
+                                <option value="{{ category.id }}">{{ category.nombre }}</option>
+                                {% endfor %}
+                                {% endif %}
+                            </select>
+                            <div class="form-text mt-2">
+                                <a href="{{ url_for('category.list_categories') }}" class="text-decoration-none">
+                                    <i class="bi bi-plus-circle"></i> Gestionar categorías
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Prioridad -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-lightning-charge text-primary"></i> Prioridad
+                        </label>
+                        <div class="segment-group">
+                            {% if priorities %}
+                            {% for priority in priorities %}
+                            <div
+                                class="segment-item {{ 'low' if priority.nombre == 'Baja' else 'media' if priority.nombre == 'Media' else 'urgent' }}">
+                                <input type="radio" name="priority_id" id="priority_{{ priority.id }}"
+                                    value="{{ priority.id }}" {{ 'checked' if priority.id==2 else '' }}>
+                                <label class="segment-label" for="priority_{{ priority.id }}">
+                                    {% if priority.nombre == 'Alta' or priority.nombre == 'Urgente' %}
+                                    <i class="bi bi-fire"></i>
+                                    {% elif priority.nombre == 'Media' %}
+                                    <i class="bi bi-lightning-fill"></i>
+                                    {% else %}
+                                    <i class="bi bi-snow2"></i>
+                                    {% endif %}
+                                    <span>{{ priority.nombre }}</span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Estado -->
+                    <div class="mb-4">
+                        <label class="form-label">
+                            <i class="bi bi-activity text-primary"></i> Estado Inicial
+                        </label>
+                        <div class="segment-group">
+                            {% if states %}
+                            {% for state in states %}
+                            <div class="segment-item">
+                                <input type="radio" name="state_id" id="state_{{ state.id }}" value="{{ state.id }}"
+                                    {{ 'checked' if state.id==1 else '' }}>
+                                <label class="segment-label" for="state_{{ state.id }}">
+                                    {% if state.nombre == 'Completada' %}
+                                    <i class="bi bi-check-circle-fill"></i>
+                                    {% elif state.nombre == 'En Progreso' %}
+                                    <i class="bi bi-play-circle-fill"></i>
+                                    {% else %}
+                                    <i class="bi bi-circle"></i>
+                                    {% endif %}
+                                    <span>{{ state.nombre }}</span>
+                                </label>
+                            </div>
+                            {% endfor %}
+                            {% endif %}
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="d-flex justify-content-between align-items-center mt-5">
+                        <a href="{{ url_for('task.list_tasks') }}" class="btn btn-outline-secondary px-4 py-2">
+                            <i class="bi bi-arrow-left"></i> Cancelar
+                        </a>
+                        <button type="submit" class="btn btn-primary px-5 py-2 fw-bold">
+                            <i class="bi bi-check-lg"></i> Crear Tarea ahora
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Daily Tip -->
+            <div class="tip-box mt-4">
+                <i class="bi bi-lightbulb-fill text-warning fs-4"></i>
+                <div>
+                    <p class="fw-bold mb-1">Consejo de Productividad</p>
+                    <p class="text-muted small">Divide las tareas grandes por descripción para que sean más manejables y
+                        menos abrumadoras.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Set min date to today
+    document.addEventListener('DOMContentLoaded', function () {
+        const dateInput = document.getElementById('due_date');
+        if (dateInput) {
+            const today = new Date().toISOString().split('T')[0];
+            dateInput.min = today;
+        }
+    });
+</script>
+{% endblock %}

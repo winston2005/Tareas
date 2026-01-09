@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}Blog - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="page-header text-center mb-5">
+        <h1 class="display-4 fw-bold">Nuestro Blog</h1>
+        <p class="lead">Noticias, consejos y trucos para mejorar tu productividad</p>
+    </div>
+
+    <div class="features-grid">
+        <!-- Article 1 -->
+        <article class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="mb-3 text-primary"><i class="fas fa-calendar-alt"></i> 8 Enero, 2026</div>
+                <h3 class="card-title h4">5 Tips para Organizar tu Día</h3>
+                <p class="card-text text-muted">Descubre cómo pequeños cambios en tu rutina matutina pueden duplicar tu
+                    productividad diaria.</p>
+                <a href="{{ url_for('article', article_id=1) }}" class="btn btn-sm btn-outline-primary mt-3">Leer
+                    más</a>
+            </div>
+        </article>
+
+        <!-- Article 2 -->
+        <article class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="mb-3 text-primary"><i class="fas fa-calendar-alt"></i> 5 Enero, 2026</div>
+                <h3 class="card-title h4">Lo Nuevo en la Versión 2.0</h3>
+                <p class="card-text text-muted">Hemos actualizado el dashboard y agregado nuevas funciones de
+                    colaboración en tiempo real.</p>
+                <a href="{{ url_for('article', article_id=2) }}" class="btn btn-sm btn-outline-primary mt-3">Leer
+                    más</a>
+            </div>
+        </article>
+
+        <!-- Article 3 -->
+        <article class="card border-0 shadow-sm h-100">
+            <div class="card-body">
+                <div class="mb-3 text-primary"><i class="fas fa-calendar-alt"></i> 28 Diciembre, 2025</div>
+                <h3 class="card-title h4">Salud Mental y Trabajo Remoto</h3>
+                <p class="card-text text-muted">Estrategias para mantener un equilibrio saludable entre la vida laboral
+                    y personal.</p>
+                <a href="{{ url_for('article', article_id=3) }}" class="btn btn-sm btn-outline-primary mt-3">Leer
+                    más</a>
+            </div>
+        </article>
+    </div>
+</div>
+{% endblock %}

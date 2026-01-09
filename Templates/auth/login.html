@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Iniciar Sesión - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="login-background">
+    <div class="login-container">
+        <div class="login-card">
+            <!-- Header -->
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-tasks"></i>
+                </div>
+                <h2>Bienvenido</h2>
+                <p>Ingrese sus credenciales para continuar</p>
+            </div>
+
+            <!-- Mensajes de error/éxito -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ 'danger' if category == 'error' else category }}" role="alert">
+                {{ message }}
+            </div>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+
+            <!-- Formulario de login -->
+            <form action="{{ url_for('auth.login') }}" method="POST">
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email" class="form-label">Correo Electrónico</label>
+                    <div class="input-group">
+                        <input type="email" class="form-control" id="email" name="email"
+                            placeholder="correo@ejemplo.com" required>
+                    </div>
+                </div>
+
+                <!-- Password -->
+                <div class="form-group">
+                    <label for="password" class="form-label">Contraseña</label>
+                    <div class="input-group">
+                        <input type="password" class="form-control" id="password" name="password"
+                            placeholder="Ingrese su contraseña" required>
+                    </div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" class="btn-login">
+                    <span>Iniciar Sesión</span>
+                </button>
+            </form>
+
+            <!-- Divider -->
+            <div class="divider">
+                <span>O</span>
+            </div>
+            <!-- Signup Link -->
+            <div class="signup-link">
+                <p>¿No tiene cuenta? <a href="{{ url_for('auth.register') }}">Regístrese aquí</a></p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+
+{% block title %}Ver Tarea - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tasks-container">
+    <div class="row row-centered">
+        <div class="col-md-11 col-lg-10 col-xl-8">
+            <!-- Detail Header -->
+            <div class="task-header-section mb-4">
+                <div class="d-flex align-items-center gap-3">
+                    <a href="{{ url_for('task.list_tasks') }}" class="btn btn-outline-secondary rounded-circle"
+                        style="width: 45px; height: 45px; display: flex; align-items: center; justify-content: center;">
+                        <i class="bi bi-arrow-left"></i>
+                    </a>
+                    <div>
+                        <h1 class="mb-0 fs-2">Detalles de Tarea</h1>
+                        <p class="text-muted mb-0">Información completa y seguimiento</p>
+                    </div>
+                </div>
+                <div class="d-flex gap-2">
+                    <a href="{{ url_for('task.edit_task', task_id=task.id) }}" class="btn btn-warning fw-bold px-4">
+                        <i class="bi bi-pencil"></i> Editar
+                    </a>
+                </div>
+            </div>
+
+            <!-- Detail Card -->
+            <div class="task-detail-premium">
+                <div class="task-detail-header d-flex justify-content-between align-items-start flex-wrap gap-3">
+                    <div class="flex-grow-1">
+                        <div class="d-flex gap-2 mb-3 flex-wrap">
+                            {% if task.categoria_nombre %}
+                            <span class="badge bg-primary bg-opacity-10 text-primary rounded-pill px-3">
+                                <i class="bi bi-folder-fill"></i> {{ task.categoria_nombre }}
+                            </span>
+                            {% endif %}
+
+                            {% set priority_class = 'baja' %}
+                            {% if task.prioridad_nombre == 'Alta' or task.prioridad_nombre == 'Urgente' %}
+                            {% set priority_class = 'alta' %}
+                            {% elif task.prioridad_nombre == 'Media' %}
+                            {% set priority_class = 'media' %}
+                            {% endif %}
+                            <span class="task-badge priority-{{ priority_class }}">
+                                <i class="bi bi-lightning-fill"></i> Prioridad {{ task.prioridad_nombre or 'Baja' }}
+                            </span>
+
+                            {% set status_class = 'pending' %}
+                            {% if task.estado_nombre == 'Completada' %}
+                            {% set status_class = 'completed' %}
+                            {% elif task.estado_nombre == 'En Progreso' %}
+                            {% set status_class = 'progress' %}
+                            {% endif %}
+                            <span class="task-badge status-{{ status_class }}">
+                                <i class="bi bi-activity"></i> {{ task.estado_nombre }}
+                            </span>
+                        </div>
+                        <h2 class="fw-800 text-primary mb-0">{{ task.titulo }}</h2>
+                    </div>
+
+                    {% if task.estado_id != 3 %}
+                    <form method="POST" action="{{ url_for('task.complete_task', task_id=task.id) }}"
+                        onsubmit="return confirm('¿Marcar esta tarea como completada?')">
+                        <button type="submit" class="btn btn-success btn-lg px-4 shadow-sm fw-bold">
+                            <i class="bi bi-check2-circle"></i> Completar Tarea
+                        </button>
+                    </form>
+                    {% endif %}
+                </div>
+
+                <div class="task-detail-body">
+                    <!-- Info Grid -->
+                    <div class="task-info-grid">
+                        <div class="task-info-item">
+                            <h6><i class="bi bi-calendar-check"></i> Fecha de Creación</h6>
+                            <p>{{ task.fecha_creacion[:10] }}</p>
+                            <small class="text-muted">{{ task.fecha_creacion[11:16] }}</small>
+                        </div>
+
+                        <div class="task-info-item">
+                            <h6><i class="bi bi-alarm"></i> Fecha Límite</h6>
+                            <p
+                                class="{{ 'text-danger' if task.fecha_vencimiento and task.estado_id != 3 else 'text-dark' }}">
+                                {{ task.fecha_vencimiento[:10] if task.fecha_vencimiento else 'Sin fecha' }}
+                            </p>
+                            <small class="text-muted">{{ task.fecha_vencimiento[11:16] if task.fecha_vencimiento|length
+                                > 10
+                                else '' }}</small>
+                        </div>
+
+                        {% if task.fecha_completado %}
+                        <div class="task-info-item">
+                            <h6><i class="bi bi-check-all text-success"></i> Finalización</h6>
+                            <p class="text-success">{{ task.fecha_completado[:10] }}</p>
+                            <small class="text-muted">{{ task.fecha_completado[11:16] }}</small>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-5">
+                        <h5 class="fw-bold mb-4 text-dark border-bottom pb-2">
+                            <i class="bi bi-text-left text-primary"></i> Descripción
+                        </h5>
+                        {% if task.descripcion %}
+                        <div class="bg-light p-4 rounded-4" style="border-left: 5px solid var(--primary-blue);">
+                            <p class="mb-0 fs-5" style="white-space: pre-wrap; line-height: 1.8;">{{ task.descripcion }}
+                            </p>
+                        </div>
+                        {% else %}
+                        <p class="text-muted fst-italic">No hay una descripción detallada para esta tarea.</p>
+                        {% endif %}
+                    </div>
+
+                    <!-- Labels/Tags Implementation Slot -->
+                    {% if task.tags %}
+                    <div class="mb-5">
+                        <h6 class="fw-bold mb-3">Etiquetas</h6>
+                        <div class="d-flex gap-2 flex-wrap">
+                            {% for tag in task.tags %}
+                            <span class="badge bg-secondary bg-opacity-10 text-secondary px-3 py-2 rounded-pill">
+                                #{{ tag.nombre }}
+                            </span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Danger Zone -->
+                    <div class="border-top pt-4 mt-5 d-flex justify-content-between align-items-center">
+                        <p class="text-muted mb-0 small">ID Interno: <strong>#{{ task.id }}</strong></p>
+                        <button type="button" class="btn btn-outline-danger btn-sm px-4" data-bs-toggle="modal"
+                            data-bs-target="#deleteTaskModal">
+                            <i class="bi bi-trash"></i> Eliminar Tarea
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal Eliminar -->
+<div class="modal fade" id="deleteTaskModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg text-center" style="border-radius: 20px;">
+            <div class="modal-header border-0 pt-4 px-4 d-flex justify-content-center">
+                <h5 class="modal-title fw-bold text-danger w-100 text-center">
+                    <i class="bi bi-exclamation-octagon-fill"></i> Acción Permanente
+                </h5>
+            </div>
+            <div class="modal-body px-4">
+                <p class="fs-5 mb-2">¿Estás seguro de que quieres borrar la tarea <strong>"{{ task.titulo }}"</strong>?
+                </p>
+                <p class="text-muted small mb-0">Se perderán todos los datos asociados y el historial de esta tarea de
+                    forma definitiva.</p>
+            </div>
+            <div class="modal-footer border-0 pb-4 px-4 d-flex justify-content-center gap-3">
+                <button type="button" class="btn btn-light px-4 py-2" data-bs-dismiss="modal">Mantener Tarea</button>
+                <form method="POST" action="{{ url_for('task.delete_task', task_id=task.id) }}">
+                    <button type="submit" class="btn btn-danger px-4 py-2 fw-bold">Borrar Definitivamente</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Flash Messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+{% if messages %}
+<div class="toast-container position-fixed top-0 end-0 p-3">
+    {% for category, message in messages %}
+    <div class="toast show align-items-center text-white bg-{{ 'success' if category == 'success' else 'danger' }} border-0"
+        role="alert">
+        <div class="d-flex">
+            <div class="toast-body">{{ message }}</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+{% endwith %}
+{% endblock %}

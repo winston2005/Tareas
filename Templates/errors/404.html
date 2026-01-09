@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 - Página No Encontrada</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/base.css') }}">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">📋 Gestor de Tareas</div>
+                <nav>
+                    <ul class="nav-list">
+                        <li><a href="/" class="nav-link">Inicio</a></li>
+                        <li><a href="/info" class="nav-link">Información</a></li>
+                        <li><a href="/contact" class="nav-link">Contacto</a></li>
+                        <li><a href="/login" class="nav-link btn-login">Iniciar Sesión</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Error Content -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1 class="hero-title" style="font-size: 6rem; margin-bottom: 0.5rem;">404</h1>
+                <h2 class="hero-subtitle" style="font-size: 2rem; margin-bottom: 1rem;">Página No Encontrada</h2>
+                <p class="hero-subtitle">Lo sentimos, la página que buscas no existe o ha sido movida.</p>
+                <a href="/" class="btn btn-primary" style="margin-top: 2rem;">Volver al Inicio</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <p>&copy; 2025 Gestor de Tareas. Todos los derechos reservados.</p>
+                <div class="footer-links">
+                    <a href="#">Privacidad</a>
+                    <a href="#">Términos</a>
+                    <a href="/contact">Soporte</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

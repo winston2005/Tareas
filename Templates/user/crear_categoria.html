@@ -1,0 +1,227 @@
+{% extends "base.html" %}
+
+{% block title %}Crear Categoría - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="tasks-container">
+    <div class="row row-centered">
+        <div class="col-md-11 col-lg-8 col-xl-6">
+            <div class="form-card">
+                <div class="form-header-box">
+                    <h1>
+                        <i class="bi bi-folder-plus text-primary"></i>
+                        Nueva Categoría
+                    </h1>
+                    <p>Organiza tus tareas con categorías personalizadas</p>
+                </div>
+
+                <!-- Live Preview Section -->
+                <div class="preview-card-section">
+                    <span class="preview-label">Vista previa de cómo se verá</span>
+                    <div class="category-card-preview" id="liveCardPreview">
+                        <div class="category-header">
+                            <h3 class="category-name" id="previewName">
+                                <i class="bi bi-folder-fill"></i> Nueva Categoría
+                            </h3>
+                            <div class="category-actions">
+                                <span class="btn-action"><i class="bi bi-pencil-square"></i></span>
+                                <span class="btn-action"><i class="bi bi-trash"></i></span>
+                            </div>
+                        </div>
+                        <div class="category-description" id="previewDescription">
+                            Sin descripción
+                        </div>
+                        <div class="category-stats mt-auto">
+                            <div class="category-tasks-count">
+                                <i class="bi bi-eye"></i>
+                                <span>Ver tareas asociadas</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <form method="POST" action="{{ url_for('category.create_category') }}" id="categoryForm">
+                    <!-- Nombre -->
+                    <div class="mb-4">
+                        <label for="name" class="form-label">
+                            Nombre de la Categoría <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" id="name" name="name" class="form-control"
+                            placeholder="Ej: Trabajo, Personal, Estudios..." required maxlength="50">
+                        <div class="form-text mt-2">
+                            <i class="bi bi-info-circle"></i> Describe tu categoría con un nombre claro
+                        </div>
+                    </div>
+
+                    <!-- Color -->
+                    <div class="mb-4">
+                        <label for="color" class="form-label">
+                            Color de Identificación <span class="text-danger">*</span>
+                        </label>
+                        <div class="color-picker-wrapper">
+                            <input type="color" id="color" name="color" class="form-control form-control-color-custom"
+                                value="#2c5282">
+                            <div class="color-preview-large-custom" id="colorPreview">
+                                Color seleccionado
+                            </div>
+                        </div>
+
+                        <!-- Colores predefinidos mejorados -->
+                        <div class="color-presets-grid">
+                            <div class="color-preset-btn active" data-color="#2c5282" title="Azul Corporativo"></div>
+                            <div class="color-preset-btn" data-color="#2f855a" title="Verde Bosque"></div>
+                            <div class="color-preset-btn" data-color="#38a169" title="Verde Esmeralda"></div>
+                            <div class="color-preset-btn" data-color="#ed8936" title="Naranja Atardecer"></div>
+                            <div class="color-preset-btn" data-color="#e53e3e" title="Rojo Intenso"></div>
+                            <div class="color-preset-btn" data-color="#805ad5" title="Morado Real"></div>
+                            <div class="color-preset-btn" data-color="#3182ce" title="Azul Cielo"></div>
+                            <div class="color-preset-btn" data-color="#d69e2e" title="Dorado"></div>
+                            <div class="color-preset-btn" data-color="#718096" title="Gris Pizarra"></div>
+                            <div class="color-preset-btn" data-color="#ed64a6" title="Rosa"></div>
+                            <div class="color-preset-btn" data-color="#0bc5ea" title="Cian"></div>
+                            <div class="color-preset-btn" data-color="#a0aec0" title="Gris Claro"></div>
+                        </div>
+
+                        <div class="form-text mt-3">
+                            <i class="bi bi-palette"></i> El color se usará para resaltar esta categoría en tus listas
+                        </div>
+                    </div>
+
+                    <!-- Descripción -->
+                    <div class="mb-4">
+                        <label for="description" class="form-label">
+                            Descripción (Opcional)
+                        </label>
+                        <textarea id="description" name="description" class="form-control"
+                            placeholder="Describe para qué usarás esta categoría..." rows="3"
+                            maxlength="200"></textarea>
+                        <div class="form-text mt-2">
+                            <i class="bi bi-chat-left-text"></i> Un resumen corto ayuda a recordar el propósito
+                        </div>
+                    </div>
+
+                    <!-- Botones -->
+                    <div class="d-grid gap-3 d-md-flex justify-content-md-end mt-5">
+                        <a href="{{ url_for('category.list_categories') }}" class="btn btn-light px-4 py-2">
+                            <i class="bi bi-arrow-left"></i> Volver a la lista
+                        </a>
+                        <button type="submit" class="btn btn-primary px-5 py-2">
+                            <i class="bi bi-check-lg"></i> Crear Categoría
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Sugerencias -->
+                <div class="example-idea-card">
+                    <h3>
+                        <i class="bi bi-lightbulb-fill text-warning"></i>
+                        Sugerencias Rápidas
+                    </h3>
+                    <div class="d-flex flex-wrap gap-2">
+                        <span class="suggestion-badge suggestion-badge-custom" data-name="Personal"
+                            data-color="#2f855a">🏠 Personal</span>
+                        <span class="suggestion-badge suggestion-badge-custom" data-name="Trabajo"
+                            data-color="#2c5282">💼 Trabajo</span>
+                        <span class="suggestion-badge suggestion-badge-custom" data-name="Universidad"
+                            data-color="#805ad5">🎓 Universidad</span>
+                        <span class="suggestion-badge suggestion-badge-custom" data-name="Salud" data-color="#e53e3e">💪
+                            Salud</span>
+                        <span class="suggestion-badge suggestion-badge-custom" data-name="Compras"
+                            data-color="#ed8936">🛒 Compras</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const colorInput = document.getElementById('color');
+            const colorPreview = document.getElementById('colorPreview');
+            const liveCardPreview = document.getElementById('liveCardPreview');
+            const colorPresets = document.querySelectorAll('.color-preset-btn');
+            const nameInput = document.getElementById('name');
+            const descInput = document.getElementById('description');
+            const previewName = document.getElementById('previewName');
+            const previewDesc = document.getElementById('previewDescription');
+
+            // Initialize presets colors
+            colorPresets.forEach(preset => {
+                const color = preset.getAttribute('data-color');
+                preset.style.background = color;
+            });
+
+            // Function to update preview
+            function updatePreview() {
+                const color = colorInput.value;
+                colorPreview.style.background = color;
+                liveCardPreview.style.setProperty('--category-color', color);
+
+                previewName.innerHTML = `<i class="bi bi-folder-fill" style="color: ${color}"></i> ${nameInput.value || 'Nueva Categoría'}`;
+                previewDesc.textContent = descInput.value || 'Sin descripción';
+            }
+
+            // Sync with inputs
+            nameInput.addEventListener('input', updatePreview);
+            descInput.addEventListener('input', updatePreview);
+
+            // Update when color changes
+            colorInput.addEventListener('input', (e) => {
+                updatePreview();
+                colorPresets.forEach(preset => preset.classList.remove('active'));
+            });
+
+            // Preset color selection
+            colorPresets.forEach(preset => {
+                preset.addEventListener('click', () => {
+                    const color = preset.getAttribute('data-color');
+                    colorInput.value = color;
+                    updatePreview();
+                    colorPresets.forEach(p => p.classList.remove('active'));
+                    preset.classList.add('active');
+                });
+            });
+
+            // Suggestions quick fill
+            document.querySelectorAll('.suggestion-badge').forEach(badge => {
+                badge.addEventListener('click', () => {
+                    const name = badge.getAttribute('data-name');
+                    const color = badge.getAttribute('data-color');
+                    nameInput.value = name;
+                    colorInput.value = color;
+                    updatePreview();
+                    colorPresets.forEach(p => {
+                        if (p.getAttribute('data-color') === color) p.classList.add('active');
+                        else p.classList.remove('active');
+                    });
+                    nameInput.focus();
+                });
+            });
+
+            // Initial call
+            updatePreview();
+        });
+    </script>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    <div class="toast-container position-fixed top-0 end-0 p-3">
+        {% for category, message in messages %}
+        <div class="toast show align-items-center text-white bg-{{ 'success' if category == 'success' else 'danger' }} border-0"
+            role="alert">
+            <div class="d-flex">
+                <div class="toast-body">{{ message }}</div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% endwith %}
+</div>
+{% endblock %}

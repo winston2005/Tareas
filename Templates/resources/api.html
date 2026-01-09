@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block title %}API - Gestor de Tareas{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="page-header text-center mb-5">
+        <h1 class="display-4 fw-bold">Documentación API</h1>
+        <p class="lead">Integra el Gestor de Tareas con tus propias aplicaciones</p>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="alert alert-info mb-4">
+                <i class="fas fa-info-circle"></i> Nuestra API está actualmente en fase Beta. Solicita tu Key de acceso
+                contactando a soporte.
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white text-start">
+                    <span class="badge bg-success me-2">GET</span> /api/v1/tasks
+                </div>
+                <div class="card-body text-start">
+                    <p>Obtiene la lista de todas las tareas del usuario autenticado.</p>
+                    <pre class="bg-light p-3 rounded"><code>
+[
+  {
+    "id": 1,
+    "title": "Revisar reporte",
+    "status": "pending",
+    "due_date": "2026-01-10"
+  },
+  ...
+]
+                    </code></pre>
+                </div>
+            </div>
+
+            <div class="card shadow-sm mb-4">
+                <div class="card-header bg-dark text-white text-start">
+                    <span class="badge bg-primary me-2">POST</span> /api/v1/tasks
+                </div>
+                <div class="card-body text-start">
+                    <p>Crea una nueva tarea en el sistema.</p>
+                    <pre class="bg-light p-3 rounded"><code>
+// Request Body
+{
+  "title": "Nueva Tarea",
+  "description": "Detalles...",
+  "priority": "high"
+}
+                    </code></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

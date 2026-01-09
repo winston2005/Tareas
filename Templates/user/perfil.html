@@ -1,0 +1,273 @@
+{% extends "base.html" %}
+
+{% block title %}Mi Perfil - Sistema de Tareas{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/user.css') }}">
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="profile-container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10 col-xl-8">
+                <div class="d-flex align-items-center gap-3 mb-4">
+                    <a href="{{ url_for('user.dashboard') }}" class="btn btn-outline-primary rounded-pill">
+                        <i class="bi bi-arrow-left"></i> <span class="d-none d-sm-inline">Volver</span>
+                    </a>
+                    <h1 class="mb-0"><i class="bi bi-person-circle"></i> Mi Perfil</h1>
+                </div>
+
+                <!-- Profile Photo Section -->
+                <div class="profile-photo-section">
+                    <div class="profile-photo-wrapper">
+                        <div class="profile-photo">
+                            {% if user.foto_perfil %}
+                            <img src="{{ url_for('static', filename='uploads/profiles/' + user.foto_perfil) }}"
+                                alt="Foto de perfil">
+                            {% else %}
+                            {{ user.nombre[0]|upper }}{{ user.apellido[0]|upper }}
+                            {% endif %}
+                        </div>
+                    </div>
+                    <h3 class="mt-3">{{ user.nombre }} {{ user.apellido }}</h3>
+                    <p class="text-muted">{{ user.email }}</p>
+                </div>
+
+                <div class="card shadow mb-4">
+                    <div class="card-header bg-white border-bottom py-3 text-center">
+                        <h5 class="mb-0 text-primary"><i class="bi bi-info-circle text-primary"></i> Información
+                            Personal
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="info-row">
+                            <div class="info-label">Nombre Completo:</div>
+                            <div class="info-value">{{ user.nombre }} {{ user.apellido }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Correo Electrónico:</div>
+                            <div class="info-value">{{ user.email }}</div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Rol:</div>
+                            <div class="info-value">
+                                <span class="badge bg-{{ 'danger' if user.rol == 'admin' else 'primary' }}">
+                                    {{ 'Administrador' if user.rol == 'admin' else 'Usuario' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Estado:</div>
+                            <div class="info-value">
+                                <span class="badge bg-{{ 'success' if user.activo else 'danger' }}">
+                                    {{ 'Activo' if user.activo else 'Inactivo' }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="info-row">
+                            <div class="info-label">Fecha de Registro:</div>
+                            <div class="info-value">{{ user.fecha_registro|datetime_format }}</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-12 col-md-6 mb-3">
+                        <div class="card shadow h-100 action-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-pencil-square text-primary" style="font-size: 2.5rem;"></i>
+                                <h5 class="mt-3 text-primary">Editar Perfil</h5>
+                                <p class="text-muted">Actualiza tu información personal</p>
+                                <button onclick="openEditModal()" class="btn btn-primary">
+                                    <i class="bi bi-pencil"></i> Editar Datos
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-6 mb-3">
+                        <div class="card shadow h-100 action-card">
+                            <div class="card-body text-center">
+                                <i class="bi bi-shield-lock text-warning" style="font-size: 2.5rem;"></i>
+                                <h5 class="mt-3 text-warning">Seguridad</h5>
+                                <p class="text-muted">Cambia tu contraseña</p>
+                                <button onclick="openPasswordModal()" class="btn btn-warning">
+                                    <i class="bi bi-key"></i> Cambiar Contraseña
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Edit Profile Modal -->
+<div id="editModal" class="custom-modal-overlay" onclick="if(event.target === this) closeEditModal()">
+    <div class="custom-modal">
+        <div class="modal-header">
+            <h3><i class="bi bi-pencil-square"></i> Editar Perfil</h3>
+            <p class="text-muted">Actualiza tu información personal.</p>
+        </div>
+        <form action="{{ url_for('user.profile') }}" method="POST" enctype="multipart/form-data"
+            style="box-shadow: none; padding: 0;">
+            <!-- Photo Upload Section -->
+            <div class="photo-upload-section">
+                <div class="photo-preview" id="photoPreview">
+                    {% if user.foto_perfil %}
+                    <img src="{{ url_for('static', filename='uploads/profiles/' + user.foto_perfil) }}" alt="Preview"
+                        id="previewImage">
+                    {% else %}
+                    <span id="previewInitials">{{ user.nombre[0]|upper }}{{ user.apellido[0]|upper }}</span>
+                    {% endif %}
+                </div>
+                <div class="file-upload-wrapper">
+                    <input type="file" id="photoInput" name="profile_photo" class="file-upload-input" accept="image/*"
+                        onchange="previewPhoto(event)">
+                    <label for="photoInput" class="file-upload-label">
+                        <i class="bi bi-camera"></i> Cambiar Foto
+                    </label>
+                    <div class="file-name-display" id="fileName">
+                        {% if user.foto_perfil %}
+                        Foto actual: {{ user.foto_perfil }}
+                        {% else %}
+                        No hay foto seleccionada
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group mb-3 text-start">
+                <label class="form-label">Nombre</label>
+                <input type="text" name="name" class="form-control" required value="{{ user.nombre }}"
+                    placeholder="Tu nombre">
+            </div>
+            <div class="form-group mb-3 text-start">
+                <label class="form-label">Apellido</label>
+                <input type="text" name="lastname" class="form-control" required value="{{ user.apellido }}"
+                    placeholder="Tu apellido">
+            </div>
+            <div class="form-group mb-4 text-start">
+                <label class="form-label">Correo Electrónico</label>
+                <input type="email" name="email" class="form-control" required value="{{ user.email }}"
+                    placeholder="tu@email.com">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeEditModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Change Password Modal -->
+<div id="passwordModal" class="custom-modal-overlay" onclick="if(event.target === this) closePasswordModal()">
+    <div class="custom-modal">
+        <div class="modal-header">
+            <h3><i class="bi bi-shield-lock"></i> Cambiar Contraseña</h3>
+            <p class="text-muted">Ingresa los siguientes datos para actualizar tu seguridad.</p>
+        </div>
+        <form action="{{ url_for('user.change_password') }}" method="POST" style="box-shadow: none; padding: 0;">
+            <div class="form-group mb-3 text-start">
+                <label class="form-label">Contraseña Actual</label>
+                <div class="input-group">
+                    <input type="password" name="old_password" class="form-control" required placeholder="********">
+                </div>
+            </div>
+            <div class="form-group mb-3 text-start">
+                <label class="form-label">Nueva Contraseña</label>
+                <div class="input-group">
+                    <input type="password" name="new_password" class="form-control" required placeholder="********">
+                </div>
+            </div>
+            <div class="form-group mb-4 text-start">
+                <label class="form-label">Confirmar Nueva Contraseña</label>
+                <div class="input-group">
+                    <input type="password" name="confirm_password" class="form-control" required placeholder="********">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closePasswordModal()">Cancelar</button>
+                <button type="submit" class="btn btn-warning">Cambiar</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    // Photo Preview Function
+    function previewPhoto(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('photoPreview');
+        const fileName = document.getElementById('fileName');
+
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                // Remove initials if present
+                const initialsSpan = document.getElementById('previewInitials');
+                if (initialsSpan) {
+                    initialsSpan.remove();
+                }
+
+                // Update or create image
+                let img = document.getElementById('previewImage');
+                if (!img) {
+                    img = document.createElement('img');
+                    img.id = 'previewImage';
+                    img.alt = 'Preview';
+                    preview.appendChild(img);
+                }
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+            fileName.textContent = file.name;
+        }
+    }
+
+    // Edit Profile Modal Functions
+    function openEditModal() {
+        event.preventDefault();
+        const modal = document.getElementById('editModal');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.querySelector('.custom-modal').classList.add('show');
+        }, 10);
+    }
+
+    function closeEditModal() {
+        const modal = document.getElementById('editModal');
+        modal.querySelector('.custom-modal').classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+
+    // Password Modal Functions
+    function openPasswordModal() {
+        event.preventDefault();
+        const modal = document.getElementById('passwordModal');
+        modal.style.display = 'flex';
+        setTimeout(() => {
+            modal.querySelector('.custom-modal').classList.add('show');
+        }, 10);
+    }
+
+    function closePasswordModal() {
+        const modal = document.getElementById('passwordModal');
+        modal.querySelector('.custom-modal').classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 300);
+    }
+
+    // Close modals on Escape key
+    document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape') {
+            closeEditModal();
+            closePasswordModal();
+        }
+    });
+</script>
+{% endblock %}

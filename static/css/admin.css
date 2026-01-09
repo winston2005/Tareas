@@ -1,0 +1,256 @@
+/* ===================================
+   ADMIN CSS - ADMIN SPECIFIC STYLES
+   =================================== */
+
+/* UNIVERSAL ADMIN CONTAINER */
+.admin-container {
+    padding: 2rem 0;
+}
+
+/* ADMIN GLOBAL SPACING - THE "ISLAND" DESIGN */
+.admin-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: -1rem;
+    margin-left: -1rem;
+}
+
+.admin-row>[class*='col-'] {
+    padding-right: 1rem;
+    padding-left: 1rem;
+    margin-bottom: 2.5rem;
+}
+
+@media (max-width: 768px) {
+    .admin-row>[class*='col-'] {
+        margin-bottom: 4rem;
+    }
+}
+
+.admin-card {
+    margin-bottom: 2rem !important;
+    /* Base margin */
+    border-radius: 20px !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
+    border: none !important;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.admin-card:hover {
+    transform: translateY(-5px);
+}
+
+@media (max-width: 768px) {
+    .admin-row>[class*='col-'] {
+        margin-bottom: 5rem;
+        /* Extreme separation on mobile stack */
+    }
+
+    .admin-card {
+        margin-bottom: 3rem !important;
+    }
+}
+
+/* ADMIN DASHBOARD LAYOUT */
+.admin-dashboard-row {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 1.5rem;
+    align-items: flex-start;
+}
+
+/* DASHBOARD STATS (TOP ROW) */
+.dashboard-stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 2rem;
+    margin-bottom: 4rem;
+}
+
+@media (max-width: 768px) {
+    .dashboard-stats-row {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        margin-bottom: 3.5rem;
+    }
+}
+
+/* ESTILOS DE TARJETAS DE ESTADÍSTICAS (STAT-CARD) */
+.stat-card {
+    padding: 1.5rem;
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    overflow: hidden;
+    color: white !important;
+    min-height: 140px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+}
+
+.stat-card.blue {
+    background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+}
+
+.stat-card.green {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+}
+
+.stat-card.orange {
+    background: linear-gradient(135deg, #f12711 0%, #f5af19 100%);
+}
+
+.stat-card.red {
+    background: linear-gradient(135deg, #cb2d3e 0%, #ef473a 100%);
+}
+
+.stat-icon {
+    position: absolute;
+    right: -10px;
+    bottom: -10px;
+    font-size: 4rem;
+    opacity: 0.2;
+}
+
+.stat-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    margin-bottom: 5px;
+}
+
+.stat-label {
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* QUICK ACTIONS */
+.quick-actions-list {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.25rem;
+}
+
+.quick-actions-list .btn {
+    text-align: left;
+    padding: 0.8rem 1.25rem;
+    border-radius: 12px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    transition: all 0.3s ease;
+}
+
+.quick-actions-list .btn:hover {
+    transform: translateX(5px);
+}
+
+@media (max-width: 992px) {
+    .quick-actions-list {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+}
+
+/* CUSTOM BUTTONS */
+.btn-back-white {
+    background-color: var(--bg-white) !important;
+    color: var(--primary-blue) !important;
+    border: 1px solid rgba(0, 0, 0, 0.05) !important;
+    font-weight: 700;
+    padding: 0.6rem 1.5rem;
+    border-radius: 50px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-back-white:hover {
+    background-color: var(--primary-blue) !important;
+    color: var(--bg-white) !important;
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+/* STATS CARDS (PREMIUM) */
+.stat-card-premium {
+    min-height: 220px;
+    display: flex;
+    flex-direction: column;
+    padding: 1.5rem;
+    border-radius: 20px;
+}
+
+.metric-value {
+    font-size: 2.8rem !important;
+    font-weight: 800 !important;
+    letter-spacing: -1.5px;
+    line-height: 1;
+}
+
+/* HELPERS & CONTRAST */
+.bg-success-soft {
+    background-color: rgba(25, 135, 84, 0.1) !important;
+    color: #198754 !important;
+}
+
+.bg-primary-soft {
+    background-color: rgba(13, 110, 253, 0.1) !important;
+    color: #0d6eef !important;
+}
+
+.bg-warning-soft {
+    background-color: rgba(255, 193, 7, 0.1) !important;
+    color: #856404 !important;
+}
+
+.fw-semi-bold {
+    font-weight: 600;
+}
+
+/* Force dark theme for specific cards */
+.card.bg-dark {
+    background-color: #1a1d20 !important;
+    color: #ffffff !important;
+}
+
+.card.bg-dark .btn-outline-light {
+    color: #ffffff !important;
+    border-color: rgba(255, 255, 255, 0.5) !important;
+}
+
+.card.bg-dark .btn-outline-light:hover {
+    background-color: #ffffff !important;
+    color: #1a1d20 !important;
+}
+
+/* RECENT ACTIVITY LIST */
+.list-group-item {
+    border-color: rgba(0, 0, 0, 0.05) !important;
+    padding: 1rem 0 !important;
+    background: transparent !important;
+}
+
+.list-group-item small strong {
+    color: var(--primary-blue);
+    font-weight: 700;
+}
+
+/* TABLES IN ADMIN */
+.table-responsive {
+    border-radius: 12px;
+}
+
+.table thead th {
+    background: rgba(0, 0, 0, 0.02);
+    border-top: none;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    letter-spacing: 0.5px;
+    color: #556c8d;
+}

@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Mensaje de Inspiración - Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+    .inspiration-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-top: 3rem;
+        text-align: center;
+        /* Centrado base para todo el contenedor */
+    }
+
+    .inspiration-header {
+        margin-bottom: 3rem;
+    }
+
+    .inspiration-header h1 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        letter-spacing: -1.5px;
+        color: #1e3c72;
+    }
+
+    .settings-card {
+        border: none;
+        border-radius: 24px;
+        box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+        background: white;
+    }
+
+    .card-accent {
+        height: 8px;
+        background: linear-gradient(90deg, #1e3c72, #38ef7d);
+    }
+
+    .tip-preview {
+        background: #f0f4f8;
+        border-radius: 16px;
+        padding: 2rem;
+        text-align: center;
+        border: 2px dashed #cbd5e0;
+        margin-top: 1.5rem;
+        position: relative;
+    }
+
+    .tip-preview i {
+        color: #38ef7d;
+        font-size: 1.5rem;
+        margin-bottom: 10px;
+        display: block;
+    }
+
+    .form-control:focus {
+        border-color: #1e3c72;
+        box-shadow: 0 0 0 0.25rem rgba(30, 60, 114, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container inspiration-container">
+    <!-- Encabezado Centrado -->
+    <div class="inspiration-header">
+        <h1><i class="fas fa-quote-left me-3 opacity-25"></i>Mensaje del Día</h1>
+        <p class="text-muted fs-5">Define la frase motivacional que verán todos los usuarios en su panel.</p>
+        <div class="mt-4">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn btn-outline-primary rounded-pill px-4 fw-bold">
+                <i class="fas fa-arrow-left me-2"></i>Volver al Panel
+            </a>
+        </div>
+    </div>
+
+    <!-- Tarjeta de Edición (Centrada) -->
+    <div class="card settings-card">
+        <div class="card-accent"></div>
+        <div class="card-body p-4 p-md-5">
+            <form action="{{ url_for('admin.settings') }}" method="POST">
+                <div class="form-group mb-4">
+                    <label for="tip_of_the_day" class="form-label fw-bold text-dark fs-5 mb-3 d-block">¿Qué quieres
+                        decir hoy?</label>
+                    <textarea name="tip_of_the_day" id="tip_of_the_day" rows="4"
+                        class="form-control text-center fs-5 shadow-sm"
+                        style="border-radius: 15px; border: 2px solid #e2e8f0;" required
+                        placeholder="Ej: 'El éxito es la suma de pequeños esfuerzos repetidos día tras día.'">{{ tip }}</textarea>
+                </div>
+
+                <!-- Vista Previa Inspiracional -->
+                <div class="tip-preview mb-4">
+                    <i class="fas fa-lightbulb"></i>
+                    <h6 class="text-muted fw-bold text-uppercase small ls-wide mb-2">Vista Previa para el Usuario</h6>
+                    <blockquote class="mb-0 fs-4 fw-bold text-dark" id="preview-text" style="font-style: italic;">
+                        "{{ tip if tip else 'Tu mensaje aparecerá aquí...' }}"
+                    </blockquote>
+                </div>
+
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary rounded-pill px-5 py-3 fw-bold shadow-lg">
+                        <i class="fas fa-paper-plane me-2"></i>Publicar Mensaje
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const textarea = document.getElementById('tip_of_the_day');
+    const preview = document.getElementById('preview-text');
+
+    textarea.addEventListener('input', (e) => {
+        preview.textContent = e.target.value ? `"${e.target.value}"` : '"Tu mensaje aparecerá aquí..."';
+    });
+</script>
+{% endblock %}

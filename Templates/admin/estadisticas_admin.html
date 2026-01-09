@@ -1,0 +1,223 @@
+{% extends "base.html" %}
+
+{% block title %}Estadísticas - Admin{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+<style>
+    /* Local Overrides for Charts */
+    .chart-container {
+        position: relative;
+        height: 380px;
+        width: 100%;
+    }
+
+    #statusNoData,
+    #priorityNoData {
+        background: rgba(0, 0, 0, 0.02);
+        border-radius: 20px;
+    }
+
+    .stat-card-premium .badge {
+        font-weight: 700 !important;
+        text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid admin-container">
+    <!-- Encabezado Mejorado y Responsivo -->
+    <div class="row mb-5">
+        <div class="col-12 col-md-8">
+            <h1 class="fw-bold h1 mb-1 text-dark" style="letter-spacing: -1.5px;">Estadísticas Globales</h1>
+            <p class="text-muted mb-0"><i class="bi bi-clock-history"></i> Reporte del sistema actualizado en tiempo
+                real</p>
+        </div>
+        <div class="col-12 col-md-4 d-flex justify-content-md-end align-items-center mt-3 mt-md-0 gap-3">
+            <a href="{{ url_for('admin.dashboard') }}" class="btn-back-white shadow-sm">
+                <i class="bi bi-arrow-left"></i> <span>Volver</span>
+            </a>
+            <button class="btn btn-primary rounded-pill px-4 py-2 fw-bold shadow-sm" onclick="window.location.reload()">
+                <i class="bi bi-arrow-clockwise"></i> Sincronizar
+            </button>
+        </div>
+    </div>
+
+    <!-- Rejilla de Métricas Principales -->
+    <div class="row admin-row mb-4">
+        <!-- Usuarios Card -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card admin-card stat-card-premium bg-primary text-white shadow-sm h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="metric-label">Usuarios</span>
+                    <i class="bi bi-people fs-3 opacity-50"></i>
+                </div>
+                <div class="metric-value">{{ stats.total_usuarios }}</div>
+                <div class="mt-2">
+                    <span class="badge admin-badge-light rounded-pill px-3">{{ stats.usuarios_activos }} Activos</span>
+                </div>
+
+                <div class="mt-4 pt-4 border-top border-white border-opacity-10">
+                    <a href="{{ url_for('admin.list_users') }}"
+                        class="btn btn-light rounded-pill px-4 w-100 fw-bold shadow-sm py-2">
+                        <i class="bi bi-person-gear"></i> Gestionar
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tareas Card -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card admin-card stat-card-premium bg-dark text-white shadow-sm h-100 border-0">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="metric-label">Tareas</span>
+                    <i class="bi bi-journal-text fs-3 opacity-50"></i>
+                </div>
+                <div class="metric-value">{{ stats.total_tasks or 0 }}</div>
+                <div class="mt-2">
+                    <span class="badge admin-badge-light rounded-pill px-3">{{ stats.pending_tasks or 0 }}
+                        Pendientes</span>
+                </div>
+
+                <div class="mt-4 pt-4 border-top border-white border-opacity-10">
+                    <a href="{{ url_for('admin.dashboard') }}"
+                        class="btn btn-outline-light border-2 rounded-pill px-4 w-100 fw-bold py-2">
+                        <i class="bi bi-eye"></i> Ver Detalles
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cumplimiento Card -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card admin-card stat-card-premium bg-success text-white shadow-sm h-100">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="metric-label">Cumplimiento</span>
+                    <i class="bi bi-check-all fs-2 opacity-50"></i>
+                </div>
+                {% set completion_perc = (stats.completed_tasks / stats.total_tasks * 100) if stats.total_tasks > 0 else
+                0 %}
+                <div class="metric-value">{{ completion_perc | round(1) }}%</div>
+                <div class="mt-3">
+                    <div class="progress progress-compact bg-white bg-opacity-25" style="height: 10px;">
+                        <div class="progress-bar bg-white shadow-sm" id="completion-bar" role="progressbar"
+                            data-perc="{{ completion_perc | round(0) }}"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Admin Card -->
+        <div class="col-sm-6 col-lg-3">
+            <div class="card admin-card stat-card-premium bg-warning text-dark shadow-sm border-0"
+                style="background-color: #ffc107 !important;">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <span class="metric-label text-dark fw-bold opacity-75">Admins</span>
+                    <i class="bi bi-shield-lock-fill fs-3 text-dark opacity-50"></i>
+                </div>
+                <div class="metric-value text-dark fw-bold">{{ stats.admins }}</div>
+                <div class="mt-2">
+                    <span class="badge bg-dark bg-opacity-10 text-dark rounded-pill px-3 fw-bold">Acceso Total</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gráficos y Detalles -->
+    <div class="row admin-row">
+        <div class="col-lg-4">
+            <div class="card admin-card shadow-sm h-100">
+                <div class="card-header bg-white py-4 border-0">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-hdd-network me-2 text-primary"></i>Sistema</h5>
+                </div>
+                <div class="card-body p-4 pt-0">
+                    <div class="list-group list-group-flush">
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted fw-semi-bold">Servidor</span>
+                            <span class="badge bg-success-soft px-3 py-2 rounded-pill"><i
+                                    class="bi bi-check-circle-fill"></i> Online</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted fw-semi-bold">Versión</span>
+                            <span class="fw-bold text-dark">v1.2.0-std</span>
+                        </div>
+                        <div class="list-group-item d-flex justify-content-between align-items-center px-0">
+                            <span class="text-muted fw-semi-bold">Carga</span>
+                            <span class="badge bg-primary-soft px-3 py-2 rounded-pill">{{ stats.usuarios_activos }} / {{
+                                stats.total_usuarios }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-8">
+            <div class="card admin-card shadow-sm border-0">
+                <div class="card-header bg-white py-4 border-0">
+                    <h5 class="fw-bold mb-0 text-dark"><i class="bi bi-pie-chart me-2 text-primary"></i>Distribución de
+                        Tareas</h5>
+                </div>
+                <div class="card-body p-4 pt-0">
+                    <div class="chart-container" id="statusChartContainer">
+                        <canvas id="statusChart"></canvas>
+                        <div id="statusNoData"
+                            class="d-none flex-column align-items-center justify-content-center h-100 text-muted">
+                            <i class="bi bi-bar-chart fs-1 mb-2"></i>
+                            <p class="fw-bold">Sin datos para graficar</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Datos ocultos para JS -->
+    <div id="stats-data" style="display: none;" data-status='{{ stats.by_status | tojson }}'
+        data-priority='{{ stats.by_priority | tojson }}'></div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const statsEl = document.getElementById('stats-data');
+        const statusDataRaw = JSON.parse(statsEl.dataset.status || '[]');
+        const completionBar = document.getElementById('completion-bar');
+
+        if (completionBar) {
+            setTimeout(() => {
+                completionBar.style.width = completionBar.dataset.perc + '%';
+            }, 500);
+        }
+
+        const hasStatusData = statusDataRaw.some(item => item.total > 0);
+
+        if (!hasStatusData) {
+            document.getElementById('statusChart').style.display = 'none';
+            document.getElementById('statusNoData').classList.replace('d-none', 'd-flex');
+        } else {
+            const ctx = document.getElementById('statusChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: statusDataRaw.map(item => item.estado),
+                    datasets: [{
+                        data: statusDataRaw.map(item => item.total),
+                        backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc', '#f6c23e', '#e74a3b'],
+                        hoverOffset: 15,
+                        borderWidth: 0,
+                        spacing: 5
+                    }]
+                },
+                options: {
+                    maintainAspectRatio: false,
+                    cutout: '75%',
+                    plugins: {
+                        legend: { position: 'bottom', labels: { padding: 30, usePointStyle: true, font: { size: 13, weight: '600' } } }
+                    }
+                }
+            });
+        }
+    });
+</script>
+{% endblock %}
